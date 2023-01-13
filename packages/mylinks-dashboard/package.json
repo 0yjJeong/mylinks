@@ -1,0 +1,30 @@
+{
+  "name": "@mylinks/dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "module": "dist/dashboard.esm.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsdx watch --verbose",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-query": "^3.39.2",
+    "axios": "^1.2.1",
+    "tailwindcss": "^3.2.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.26",
+    "tsdx": "^0.14.1",
+    "rollup-plugin-styles": "^4.0.0",
+    "postcss": "^8.4.20",
+    "autoprefixer": "^10.4.13"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}

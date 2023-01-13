@@ -1,0 +1,24 @@
+{
+  "name": "root",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"yarn watch\" \"yarn start\" \"yarn start:backend\"",
+    "start": "yarn workspace example start",
+    "start:backend": "yarn workspace example-backend start",
+    "build": "lerna run build",
+    "watch": "lerna run dev"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "example"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "lerna": "^6.4.0",
+    "cross-env": "^7.0.3",
+    "typescript": "^4.9.4"
+  }
+}
