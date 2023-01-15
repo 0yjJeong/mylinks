@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"yarn watch\" \"yarn start\" \"yarn start:backend\"",
+    "dev": "concurrently \"yarn start\" \"yarn start:backend\"",
     "start": "yarn workspace example start",
     "start:backend": "yarn workspace example-backend start",
     "build": "lerna run build",
