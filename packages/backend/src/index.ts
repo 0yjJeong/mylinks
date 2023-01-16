@@ -1,6 +1,8 @@
 import express from 'express';
 import knex from 'knex';
 
+import 'dotenv/config';
+
 import dashboard from './plugins/dashboard';
 
 const DEFAULT_PORT = 5000;
