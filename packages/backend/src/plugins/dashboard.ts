@@ -6,5 +6,5 @@ import {
 
 export default async function dashboard({ database }: { database: Knex }) {
   const db = await createDatabase(database);
-  return createRouter(db);
+  return createRouter(db, 'http://localhost:5173');
 }
