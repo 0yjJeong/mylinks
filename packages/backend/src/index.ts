@@ -1,5 +1,6 @@
 import express from 'express';
 import knex from 'knex';
+import cors from 'cors';
 
 import 'dotenv/config';
 
@@ -24,6 +25,9 @@ function dashboardEnv() {
 async function run() {
   const app = express();
 
+  if (process.env.NODE_ENV === 'development') {
+    app.use(cors({ origin: process.env.CLIENT_URL }));
+  }
   app.use(express.json());
   app.use('/dashboard', await dashboard(dashboardEnv()));
 

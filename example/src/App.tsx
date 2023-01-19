@@ -1,7 +1,15 @@
-import Dashboard from '@mylinks/dashboard';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import List from './list';
 
 function App() {
-  return <Dashboard />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/list/:id' element={<List />} />
+        <Route index element={<>Home</>} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
