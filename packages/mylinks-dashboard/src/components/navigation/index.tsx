@@ -7,7 +7,9 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { useData } from '../../api';
 import { useDashboardStore } from '../../store/dashboard';
 
-const Navigation = () => {
+interface NavigationProps {}
+
+const Navigation: React.FC<NavigationProps> = () => {
   const dashboard = useData();
   const { id } = useParams();
   const { data, isFetching } = useQuery(
