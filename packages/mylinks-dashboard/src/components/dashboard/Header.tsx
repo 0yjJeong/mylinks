@@ -22,17 +22,19 @@ const Header = () => {
   }
 
   return (
-    <div className='flex justify-between'>
-      <TitleInput
-        id={id}
-        maxLength={30}
-        defaultValue={data.data.title}
-        editList={dashboard.editList}
-      />
-      <aside className='flex gap-6'>
-        <DeleteListButton deleteList={dashboard.deleteList} />
-        <NewListButton />
-      </aside>
+    <div className='border-b-2 border-[#EEEEEE]'>
+      <div className='flex justify-between px-3 py-2'>
+        <TitleInput
+          id={id}
+          maxLength={30}
+          defaultValue={data.data.title}
+          editList={dashboard.editList}
+        />
+        <aside className='flex gap-6'>
+          <DeleteListButton deleteList={dashboard.deleteList} />
+          <NewListButton />
+        </aside>
+      </div>
     </div>
   );
 };

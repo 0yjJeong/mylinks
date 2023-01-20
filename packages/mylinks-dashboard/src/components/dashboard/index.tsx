@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './Header';
+import Navigation from './Navigation';
 
 interface Props {
   children?: React.ReactNode;
@@ -7,8 +8,9 @@ interface Props {
 
 const Dashboard: React.FC<Props> = ({ children }) => {
   return (
-    <div className='py-3 px-2'>
+    <div>
       <Header />
+      <Navigation />
       <div>{children}</div>
     </div>
   );
