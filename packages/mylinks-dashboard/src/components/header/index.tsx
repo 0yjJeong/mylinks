@@ -22,7 +22,7 @@ const Header = () => {
   }
 
   return (
-    <div className='border-b-2 border-[#EEEEEE]'>
+    <div className='border-b-2 border-[#EEEEEE] box-border'>
       <div className='flex justify-between px-3 py-2'>
         <TitleInput
           id={id}

@@ -1,3 +1,3 @@
 export { default } from './external-components';
 export { DataManager } from './api/data';
-export { Header, Navigation } from './components';
+export { Header, Navigation, Table, Head } from './components';
