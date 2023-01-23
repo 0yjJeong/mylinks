@@ -89,6 +89,7 @@ const Table: React.FC<TableProps> = ({
       return React.cloneElement<any>(child, {
         ref: childRef,
         index,
+        rowLength: data?.data.length ?? rows?.length,
         mouseDown,
       });
     }
@@ -108,9 +109,12 @@ const Table: React.FC<TableProps> = ({
   }
 
   return (
-    <div className='w-full h-full relative overflow-auto'>
+    <div className='w-full h-full relative overflow-auto bg-[#F6F6F6]'>
       <table
         ref={ref}
+        style={{
+          gridTemplateColumns: `repeat(${childrenWithProps.length}, minmax(${minCellWidth}px,3fr))`,
+        }}
         className={`overflow-auto absolute top-0 bottom-0 content-start grid grid-cols-[${cols}]`}
       >
         <thead className='contents'>
@@ -121,12 +125,19 @@ const Table: React.FC<TableProps> = ({
             <tr key={row.id} className='contents'>
               {(childrenWithProps as React.ReactElement[]).map((child) => {
                 const name = child.props.name;
+
+                if (!(name in row)) {
+                  return null;
+                }
+
                 return (
                   <td
                     key={name}
-                    className='block whitespace-nowrap text-ellipsis overflow-hidden'
+                    className='flex items-center bg-white border-b-[1px] border-[#D5D5D5] h-10'
                   >
-                    {row[name]}
+                    <span className='text-sm color-[#2C2C2C] pl-2 block whitespace-nowrap text-ellipsis overflow-hidden'>
+                      {row[name]}
+                    </span>
                   </td>
                 );
               })}

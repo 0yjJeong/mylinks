@@ -5,22 +5,29 @@ export interface HeadProps {
   index?: number;
   type?: string;
   classes?: string;
+  rowLength?: number;
   children?: React.ReactNode;
   mouseDown?: (index: number) => void;
 }
 
 const Head = React.forwardRef<HTMLTableCellElement, HeadProps>((props, ref) => {
-  const { index, children, mouseDown } = props;
+  const { index, rowLength = 0, children, mouseDown } = props;
 
   const onMouseDown = useCallback(() => {
     mouseDown(index);
   }, [index, mouseDown]);
 
   return (
-    <th ref={ref} className={`relative select-none text-left`}>
-      <span>{children}</span>
+    <th
+      ref={ref}
+      className={`flex items-center relative select-none text-left h-10 border-b-[1px] border-[#D5D5D5]`}
+    >
+      <span className='flex items-center gap-2 pl-2 text-sm color-[#2C2C2C]'>
+        {children}
+      </span>
       <div
-        className='bg-gray-100 w-0.5 h-[100vh] cursor-col-resize absolute top-0 bottom-0 right-0'
+        style={{ height: `${(rowLength + 1) * 40}px` }}
+        className={`bg-[#D5D5D5] w-[1px] z-10 cursor-col-resize absolute top-0 bottom-0 right-0`}
         onMouseDown={onMouseDown}
       />
     </th>
