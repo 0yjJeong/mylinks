@@ -13,9 +13,9 @@ const Navigation: React.FC<NavigationProps> = () => {
   const dashboard = useData();
   const { id } = useParams();
   const { data, isFetching } = useQuery(
-    `dashboard/link/${id}/ref`,
+    `dashboard/table/${id}/ref`,
     () => {
-      return dashboard.refLists();
+      return dashboard.refTable();
     },
     { refetchOnWindowFocus: false }
   );

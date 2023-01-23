@@ -4,15 +4,15 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MdDelete } from 'react-icons/md';
 import { AiFillFileAdd } from 'react-icons/ai';
 import { useData } from '../../api';
-import { ListRaw } from '../../types';
+import { RowRaw } from '../../types';
 
 const Header = () => {
   const { id } = useParams();
   const dashboard = useData();
   const { data, isFetching } = useQuery(
-    `dashboard/link/${id}`,
+    `dashboard/table/${id}`,
     () => {
-      return dashboard.list();
+      return dashboard.table();
     },
     { refetchOnWindowFocus: false }
   );
@@ -28,10 +28,10 @@ const Header = () => {
           id={id}
           maxLength={30}
           defaultValue={data.data.title}
-          editList={dashboard.editList}
+          editList={dashboard.editTable}
         />
         <aside className='flex gap-6'>
-          <DeleteListButton deleteList={dashboard.deleteList} />
+          <DeleteListButton deleteList={dashboard.deleteTable} />
           <NewListButton />
         </aside>
       </div>
@@ -41,7 +41,7 @@ const Header = () => {
 
 interface TitleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
-  editList(list: Partial<ListRaw>): Promise<any>;
+  editList(list: Partial<RowRaw>): Promise<any>;
 }
 
 export const TitleInput: React.FC<TitleInputProps> = ({
@@ -50,7 +50,7 @@ export const TitleInput: React.FC<TitleInputProps> = ({
   ...rest
 }) => {
   const queryClient = useQueryClient();
-  const mutation = useMutation((list: Partial<ListRaw>) => editList(list), {
+  const mutation = useMutation((list: Partial<RowRaw>) => editList(list), {
     onSuccess: () => {
       queryClient.refetchQueries(`dashboard/link/${id}`);
     },

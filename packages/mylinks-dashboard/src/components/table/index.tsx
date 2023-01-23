@@ -30,9 +30,9 @@ const Table: React.FC<TableProps> = ({
   const refs = useRef<React.MutableRefObject<HTMLElement>[]>([]);
 
   const { data, isFetching } = useQuery(
-    `dashboard/list/${id}/links`,
+    `dashboard/table/${id}/links`,
     () => {
-      return dashboard.links();
+      return dashboard.rows();
     },
     { refetchOnWindowFocus: false }
   );

@@ -1,10 +1,10 @@
-export type ListRaw = {
+export type TableRaw = {
   id: string;
   title: string;
   created_at: string;
 };
 
-export type LinkRaw = {
+export type RowRaw = {
   id: string;
   list_id: string;
   url: string;

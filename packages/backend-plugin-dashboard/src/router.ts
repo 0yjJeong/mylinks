@@ -1,37 +1,46 @@
 import { Router } from 'express';
-import { Dashboard } from './database';
+import { Resource } from './database';
+import Metadata from './metadata/Metadata';
 import { getListId, getOrigin } from './utils';
 
-export function createRouter(dashboard: Dashboard, clientUrl: string) {
+export function createRouter(dashboard: Resource, clientUrl: string) {
   const router = Router();
 
-  /* /list */
+  // PATH: /metadata
+  router.get('/metadata', async (req, res) => {
+    const { url } = req.body;
+    const metadata = new Metadata(url);
+    const result = await metadata.getMetadata();
+    res.status(200).send(result);
+  });
+
+  // PATH: /table
   router
-    .get('/list/:id', async (req, res) => {
+    .get('/table/:id', async (req, res) => {
       const { id } = req.params;
-      const result = await dashboard.list(id);
+      const result = await dashboard.table(id);
       res.status(200).send(result);
     })
-    .get('/list/:id/ref', async (req, res) => {
+    .get('/table/:id/ref', async (req, res) => {
       const { id } = req.params;
-      const result = await dashboard.refLists(id);
+      const result = await dashboard.refTable(id);
       res.status(200).send(result);
     })
-    .post(['/list', '/list/:id'], async (req, res) => {
+    .post(['/table', '/table/:id'], async (req, res) => {
       const { id } = req.params;
-      const result = await dashboard.addOrUpdateItem('lists', req.body, id);
+      const result = await dashboard.addOrUpdateItem('tables', req.body, id);
       res.status(200).send(result);
     })
-    .delete('/list/:id', async (req, res) => {
+    .delete('/table/:id', async (req, res) => {
       const { id } = req.params;
-      await dashboard.deleteItem('lists', id);
+      await dashboard.deleteItem('tables', id);
       res.status(200).send();
     });
 
-  /* /list/:listId */
+  // PATH: /table/:table_id/row
   router
-    .get('/list/:listId/links', async (req, res) => {
-      const { listId } = req.params;
+    .get('/table/:table_id/rows', async (req, res) => {
+      const { table_id } = req.params;
       const {
         offset,
         limit,
@@ -41,7 +50,7 @@ export function createRouter(dashboard: Dashboard, clientUrl: string) {
         pagination = { offset, limit },
         sort = { field, order },
       } = req.query;
-      const links = await dashboard.links(listId, {
+      const links = await dashboard.rows(table_id, {
         pagination,
         sort,
         filter,
@@ -52,26 +61,29 @@ export function createRouter(dashboard: Dashboard, clientUrl: string) {
         .header('Access-Control-Expose-Headers', 'x-total-count')
         .send(links);
     })
-    .post('/list/:listId/link', async (req, res) => {
-      const { listId } = req.params;
-      if (getOrigin(clientUrl) === getOrigin(req.body.url)) {
-        const result = await dashboard.addOrUpdateItem('lists_lists', {
-          source_id: listId,
-          target_id: getListId(req.body.url),
-        });
-        return res.status(200).send(result);
+    .post('/table/:table_id/row', async (req, res) => {
+      const { table_id } = req.params;
+      if (req.body.url) {
+        const fromClient = getOrigin(clientUrl) === getOrigin(req.body.url);
+        if (fromClient) {
+          const result = await dashboard.addOrUpdateItem('table_to_tables', {
+            source_id: table_id,
+            target_id: getListId(req.body.url),
+          });
+          return res.status(200).send(result);
+        }
       }
-      const result = await dashboard.addLink(listId, req.body.url);
+      const result = await dashboard.addRow(table_id, req.body);
       res.status(200).send(result);
     })
-    .put('/list/:listId/link/:id', async (req, res) => {
+    .put('/table/:table_id/row/:id', async (req, res) => {
       const { id } = req.params;
-      const result = await dashboard.addOrUpdateItem('links', req.body, id);
+      const result = await dashboard.addOrUpdateItem('rows', req.body, id);
       res.status(200).send(result);
     })
-    .delete('/list/:listId/link/:id', async (req, res) => {
+    .delete('/table/:table_id/row/:id', async (req, res) => {
       const { id } = req.params;
-      await dashboard.deleteItem('links', id);
+      await dashboard.deleteItem('rows', id);
       res.status(200).send();
     });
 

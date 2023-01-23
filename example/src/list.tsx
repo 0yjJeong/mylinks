@@ -32,7 +32,7 @@ const List = () => {
           <BsFillCalendarDateFill />
           추가한 날짜
         </Head>
-        <Head name='list_id'>
+        <Head name='table_id'>
           <BiTable />
           소속
         </Head>

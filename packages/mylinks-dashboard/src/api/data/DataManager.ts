@@ -1,49 +1,51 @@
 import axios from 'axios';
-import { LinkRaw, ListRaw } from '../../types';
+import { TableRaw, RowRaw } from '../../types';
 
-type ListResponse = {
-  data: ListRaw;
+type TableResponse = {
+  data: TableRaw;
 };
 
-type LinksResponse = {
+type RefTableResponse = {
+  data: TableRaw[];
+};
+
+type AddTableResponse = {
+  data: TableRaw;
+};
+
+type EditTableResponse = {
+  data: TableRaw;
+};
+
+type DeleteTableResponse = {};
+
+type RowsResponse = {
   count: number;
-  data: LinkRaw[];
+  data: RowRaw[];
 };
 
-type RefListsResponse = {
-  data: ListRaw[];
+type AddRowResponse = {
+  data: RowRaw;
 };
 
-type AddListResponse = {
-  data: ListRaw;
+type EditRowResponse = {
+  data: RowRaw;
 };
 
-type EditListResponse = {
-  data: ListRaw;
-};
-
-type DeleteListResponse = {};
-
-type AddLinkResponse = {
-  data: LinkRaw;
-};
-
-type EditLinkResponse = {
-  data: LinkRaw;
-};
-
-type DeleteLinkResponse = {};
+type DeleteRowResponse = {};
 
 interface TDataManager {
-  list(): Promise<ListResponse>;
-  refLists(): Promise<RefListsResponse>;
-  links(): Promise<LinksResponse>;
-  addList(list: Partial<ListRaw>): Promise<AddListResponse>;
-  editList(list: Omit<ListRaw, 'id' | 'created_at'>): Promise<EditListResponse>;
-  deleteList(): Promise<DeleteListResponse>;
-  addLink(url: string): Promise<AddLinkResponse>;
-  editLink(link: Partial<LinkRaw>): Promise<EditLinkResponse>;
-  deleteLink(id: string): Promise<DeleteLinkResponse>;
+  table(): Promise<TableResponse>;
+  refTable(): Promise<RefTableResponse>;
+  addTable(list: Partial<TableRaw>): Promise<AddTableResponse>;
+  editTable(
+    list: Omit<TableRaw, 'id' | 'created_at'>
+  ): Promise<EditTableResponse>;
+  deleteTable(): Promise<DeleteTableResponse>;
+  rows(): Promise<RowsResponse>;
+  addRow(url: string): Promise<AddRowResponse>;
+  editRow(link: Partial<RowRaw>): Promise<EditRowResponse>;
+  deleteRow(id: string): Promise<DeleteRowResponse>;
 }
 
 export default class DataManager implements TDataManager {
@@ -51,71 +53,71 @@ export default class DataManager implements TDataManager {
 
   get id() {
     return window.location.href
-      .match(/\/list\/([a-zA-Z0-9-])+/g)[0]
+      .match(/\/table\/([a-zA-Z0-9-])+/g)[0]
       .split('/')[2];
   }
 
   get baseUrl() {
-    return `${this.apiUrl}/dashboard/list`;
+    return `${this.apiUrl}/dashboard/table`;
   }
 
-  async list(): Promise<ListResponse> {
-    const { data } = await axios.get<ListRaw>(`${this.baseUrl}/${this.id}`);
+  async table(): Promise<TableResponse> {
+    const { data } = await axios.get<TableRaw>(`${this.baseUrl}/${this.id}`);
     return { data };
   }
 
-  async links(): Promise<LinksResponse> {
-    const { headers, data } = await axios.get<LinkRaw[]>(
-      `${this.baseUrl}/${this.id}/links?${location.search}`
-    );
-    const count = parseInt(headers['x-total-count'], 10);
-    return { data, count };
-  }
-
-  async refLists(): Promise<RefListsResponse> {
-    const { data } = await axios.get<ListRaw[]>(
+  async refTable(): Promise<RefTableResponse> {
+    const { data } = await axios.get<TableRaw[]>(
       `${this.baseUrl}/${this.id}/ref`
     );
     return { data };
   }
 
-  async addList(list: Partial<ListRaw>): Promise<AddListResponse> {
-    const { data } = await axios.post<ListRaw>(`${this.baseUrl}`, list);
+  async addTable(table: Partial<TableRaw>): Promise<AddTableResponse> {
+    const { data } = await axios.post<TableRaw>(`${this.baseUrl}`, table);
     return { data };
   }
 
-  async editList(list: Partial<ListRaw>): Promise<EditListResponse> {
-    const { data } = await axios.post<ListRaw>(
+  async editTable(table: Partial<TableRaw>): Promise<EditTableResponse> {
+    const { data } = await axios.post<TableRaw>(
       `${this.baseUrl}/${this.id}`,
-      list
+      table
     );
     return { data };
   }
 
-  async deleteList(): Promise<DeleteListResponse> {
-    const { data } = await axios.delete<ListRaw>(`${this.baseUrl}/${this.id}`);
+  async deleteTable(): Promise<DeleteTableResponse> {
+    const { data } = await axios.delete<TableRaw>(`${this.baseUrl}/${this.id}`);
     return { data };
   }
 
-  async addLink(url: string): Promise<AddLinkResponse> {
-    const { data } = await axios.post<LinkRaw>(
-      `${this.baseUrl}/${this.id}/link`,
+  async rows(): Promise<RowsResponse> {
+    const { headers, data } = await axios.get<RowRaw[]>(
+      `${this.baseUrl}/${this.id}/rows?${location.search}`
+    );
+    const count = parseInt(headers['x-total-count'], 10);
+    return { data, count };
+  }
+
+  async addRow(url: string): Promise<AddRowResponse> {
+    const { data } = await axios.post<RowRaw>(
+      `${this.baseUrl}/${this.id}/row`,
       { url }
     );
     return { data };
   }
 
-  async editLink(link: Partial<LinkRaw>): Promise<EditLinkResponse> {
-    const { data } = await axios.put<LinkRaw>(
-      `${this.baseUrl}/${this.id}/link/${this.id}`,
-      link
+  async editRow(row: Partial<RowRaw>): Promise<EditRowResponse> {
+    const { data } = await axios.put<RowRaw>(
+      `${this.baseUrl}/${this.id}/row/${this.id}`,
+      row
     );
     return { data };
   }
 
-  async deleteLink(id: string): Promise<DeleteLinkResponse> {
-    const { data } = await axios.delete<LinkRaw>(
-      `${this.baseUrl}/${this.id}/link/${id}`
+  async deleteRow(id: string): Promise<DeleteRowResponse> {
+    const { data } = await axios.delete<RowRaw>(
+      `${this.baseUrl}/${this.id}/row/${id}`
     );
     return { data };
   }

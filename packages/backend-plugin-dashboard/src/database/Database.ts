@@ -1,10 +1,9 @@
 import { Knex } from 'knex';
-import urlMetadata from 'url-metadata';
 import { v4 as uuidv4 } from 'uuid';
-import { Dashboard, ID, Result } from './types';
+import { Resource, ID, Result } from './types';
 
-export default class Database implements Dashboard {
-  count: null | number;
+export default class Database implements Resource {
+  public count: null | number;
 
   constructor(private readonly database: Knex) {}
 
@@ -39,24 +38,24 @@ export default class Database implements Dashboard {
     }
   }
 
-  async list(id: ID): Promise<Result> {
-    const list = await this.getOne('lists', id);
+  async table(id: ID): Promise<Result> {
+    const list = await this.getOne('tables', id);
     if (!list) {
-      throw new Error(`Found no list with ID ${id}`);
+      throw new Error(`Found no table with ID ${id}`);
     }
     return list;
   }
 
-  async refLists(listId: ID): Promise<Result[]> {
-    const lists = await this.database<Result>('lists_lists')
-      .where({ source_id: listId })
-      .innerJoin('lists', 'target_id', 'lists.id')
-      .select('lists.id', 'lists.title', 'lists.created_at');
+  async refTable(tableId: ID): Promise<Result[]> {
+    const lists = await this.database<Result>('table_to_tables')
+      .where({ source_id: tableId })
+      .innerJoin('tables', 'target_id', 'tables.id')
+      .select('tables.id', 'tables.title', 'tables.created_at');
     return lists;
   }
 
-  async links(options): Promise<Result[]> {
-    const tx = this.database<Result>('links');
+  async rows(options): Promise<Result[]> {
+    const tx = this.database<Result>('rows');
 
     if (options?.filter) {
       tx.whereIn('list_id', options?.filter);
@@ -79,20 +78,16 @@ export default class Database implements Dashboard {
     return await tx.select();
   }
 
-  async addLink(listId: ID, url: string): Promise<Result> {
-    const item = await urlMetadata(url);
-    if (!item) {
-      throw new Error(`Found no metadata with url ${url}`);
-    }
+  async addRow(tableId: ID, item: Result): Promise<Result> {
     const id = uuidv4();
-    await this.database<Result>('links').insert({
+    await this.database<Result>('rows').insert({
       id,
-      url: item.url,
-      title: item.title,
-      image: item.image,
-      description: item.description,
-      list_id: listId,
+      url: item.url || null,
+      title: item.title || null,
+      image: item.image || null,
+      description: item.description || null,
+      table_id: tableId,
     });
-    return this.getOne('links', id);
+    return this.getOne('rows', id);
   }
 }
