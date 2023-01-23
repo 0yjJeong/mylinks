@@ -48,7 +48,8 @@ export function createRouter(dashboard: Dashboard, clientUrl: string) {
       });
       res
         .status(200)
-        .header({ 'x-total-count': dashboard.count })
+        .header('x-total-count', dashboard.count.toString())
+        .header('Access-Control-Expose-Headers', 'x-total-count')
         .send(links);
     })
     .post('/list/:listId/link', async (req, res) => {

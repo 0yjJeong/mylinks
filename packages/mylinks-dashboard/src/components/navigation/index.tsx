@@ -25,7 +25,7 @@ const Navigation: React.FC<NavigationProps> = () => {
   }
 
   return (
-    <nav className='border-b-2 border-[#EEEEEE] flex justify-between items-center'>
+    <nav className='border-b-2 border-[#EEEEEE] box-border flex justify-between items-center'>
       <div className='px-3 py-2 overflow-x-auto'>
         <div className='whitespace-nowrap'>
           {data.data.map((list) => {
