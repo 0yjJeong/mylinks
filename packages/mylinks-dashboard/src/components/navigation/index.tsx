@@ -17,7 +17,9 @@ const Navigation: React.FC<NavigationProps> = () => {
     () => {
       return dashboard.refTable();
     },
-    { refetchOnWindowFocus: false }
+    {
+      refetchOnWindowFocus: false,
+    }
   );
 
   if (isFetching) {

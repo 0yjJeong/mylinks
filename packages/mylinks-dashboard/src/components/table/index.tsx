@@ -5,7 +5,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useQuery } from 'react-query';
+import { MdAddCircle } from 'react-icons/md';
+import { useMutation, useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { useData } from '../../api';
 
@@ -22,20 +23,26 @@ const Table: React.FC<TableProps> = ({
   minCellWidth = 150,
   children,
 }) => {
-  const ref = useRef<HTMLTableElement>(null);
   const { id } = useParams();
   const dashboard = useData();
   const [activeIndex, setActiveIndex] = useState<number>(null);
 
+  const ref = useRef<HTMLTableElement>(null);
   const refs = useRef<React.MutableRefObject<HTMLElement>[]>([]);
 
-  const { data, isFetching } = useQuery(
-    `dashboard/table/${id}/links`,
+  const { data, refetch } = useQuery(
+    `dashboard/table/${id}/rows`,
     () => {
       return dashboard.rows();
     },
-    { refetchOnWindowFocus: false }
+    { initialData: { data: [], count: 0 }, refetchOnWindowFocus: false }
   );
+
+  const mutation = useMutation(() => dashboard.addRow(), {
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   useEffect(() => {
     if (activeIndex !== null) {
@@ -104,12 +111,11 @@ const Table: React.FC<TableProps> = ({
     [minCellWidth, childrenWithProps.length]
   );
 
-  if (isFetching) {
-    return null;
-  }
-
   return (
-    <div className='w-full h-full relative overflow-auto bg-[#F6F6F6]'>
+    <div
+      style={{ height: 'calc(100% - 84px)' }}
+      className='w-full relative overflow-auto bg-[#F6F6F6]'
+    >
       <table
         ref={ref}
         style={{
@@ -121,7 +127,7 @@ const Table: React.FC<TableProps> = ({
           <tr className='contents'>{childrenWithProps}</tr>
         </thead>
         <tbody className='contents'>
-          {data.data.map((row) => (
+          {data?.data.map((row) => (
             <tr key={row.id} className='contents'>
               {(childrenWithProps as React.ReactElement[]).map((child) => {
                 const name = child.props.name;
@@ -143,6 +149,33 @@ const Table: React.FC<TableProps> = ({
               })}
             </tr>
           ))}
+          <tr className='contents'>
+            {Array.from({ length: childrenWithProps.length }).map(
+              (_, index) => {
+                const isFirstCell = index === 0;
+                return (
+                  <td
+                    key={index}
+                    className={`flex items-center bg-[#EFEFEF] border-b-[1px] border-[#D5D5D5] h-10 ${isFirstCell &&
+                      'cursor-pointer hover:bg-[#E8E8E8]'}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (isFirstCell) {
+                        mutation.mutate();
+                      }
+                    }}
+                  >
+                    {isFirstCell && (
+                      <span className='pl-2 flex items-center gap-1 color-[#2C2C2C]'>
+                        <MdAddCircle className='text-xl' />
+                        추가하기
+                      </span>
+                    )}
+                  </td>
+                );
+              }
+            )}
+          </tr>
         </tbody>
       </table>
     </div>

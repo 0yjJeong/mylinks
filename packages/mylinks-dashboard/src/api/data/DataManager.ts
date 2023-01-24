@@ -1,38 +1,38 @@
 import axios from 'axios';
 import { TableRaw, RowRaw } from '../../types';
 
-type TableResponse = {
+export type TableResponse = {
   data: TableRaw;
 };
 
-type RefTableResponse = {
+export type RefTableResponse = {
   data: TableRaw[];
 };
 
-type AddTableResponse = {
+export type AddTableResponse = {
   data: TableRaw;
 };
 
-type EditTableResponse = {
+export type EditTableResponse = {
   data: TableRaw;
 };
 
-type DeleteTableResponse = {};
+export type DeleteTableResponse = {};
 
-type RowsResponse = {
+export type RowsResponse = {
   count: number;
   data: RowRaw[];
 };
 
-type AddRowResponse = {
+export type AddRowResponse = {
   data: RowRaw;
 };
 
-type EditRowResponse = {
+export type EditRowResponse = {
   data: RowRaw;
 };
 
-type DeleteRowResponse = {};
+export type DeleteRowResponse = {};
 
 interface TDataManager {
   table(): Promise<TableResponse>;
@@ -43,7 +43,7 @@ interface TDataManager {
   ): Promise<EditTableResponse>;
   deleteTable(): Promise<DeleteTableResponse>;
   rows(): Promise<RowsResponse>;
-  addRow(url: string): Promise<AddRowResponse>;
+  addRow(): Promise<AddRowResponse>;
   editRow(link: Partial<RowRaw>): Promise<EditRowResponse>;
   deleteRow(id: string): Promise<DeleteRowResponse>;
 }
@@ -62,6 +62,7 @@ export default class DataManager implements TDataManager {
   }
 
   async table(): Promise<TableResponse> {
+    console.log(`${this}`);
     const { data } = await axios.get<TableRaw>(`${this.baseUrl}/${this.id}`);
     return { data };
   }
@@ -79,6 +80,7 @@ export default class DataManager implements TDataManager {
   }
 
   async editTable(table: Partial<TableRaw>): Promise<EditTableResponse> {
+    console.log(`${this}`);
     const { data } = await axios.post<TableRaw>(
       `${this.baseUrl}/${this.id}`,
       table
@@ -99,10 +101,10 @@ export default class DataManager implements TDataManager {
     return { data, count };
   }
 
-  async addRow(url: string): Promise<AddRowResponse> {
+  async addRow(): Promise<AddRowResponse> {
     const { data } = await axios.post<RowRaw>(
       `${this.baseUrl}/${this.id}/row`,
-      { url }
+      { table_id: this.id }
     );
     return { data };
   }

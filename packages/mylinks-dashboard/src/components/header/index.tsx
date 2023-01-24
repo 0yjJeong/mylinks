@@ -4,22 +4,20 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MdDelete } from 'react-icons/md';
 import { AiFillFileAdd } from 'react-icons/ai';
 import { useData } from '../../api';
-import { RowRaw } from '../../types';
+import { RowRaw, TableRaw } from '../../types';
 
 const Header = () => {
   const { id } = useParams();
   const dashboard = useData();
-  const { data, isFetching } = useQuery(
+  const { data } = useQuery(
     `dashboard/table/${id}`,
     () => {
       return dashboard.table();
     },
-    { refetchOnWindowFocus: false }
+    {
+      refetchOnWindowFocus: false,
+    }
   );
-
-  if (isFetching) {
-    return null;
-  }
 
   return (
     <div className='border-b-2 border-[#EEEEEE] box-border'>
@@ -27,7 +25,7 @@ const Header = () => {
         <TitleInput
           id={id}
           maxLength={30}
-          defaultValue={data.data.title}
+          defaultValue={data?.data.title ?? ''}
           editList={dashboard.editTable}
         />
         <aside className='flex gap-6'>
@@ -49,12 +47,16 @@ export const TitleInput: React.FC<TitleInputProps> = ({
   editList,
   ...rest
 }) => {
+  const dashboard = useData();
   const queryClient = useQueryClient();
-  const mutation = useMutation((list: Partial<RowRaw>) => editList(list), {
-    onSuccess: () => {
-      queryClient.refetchQueries(`dashboard/link/${id}`);
-    },
-  });
+  const mutation = useMutation(
+    (table: Partial<TableRaw>) => dashboard.editTable(table),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries(`dashboard/table/${id}`);
+      },
+    }
+  );
 
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const list = { title: e.target.value };
