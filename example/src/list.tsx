@@ -20,11 +20,11 @@ const List = () => {
       <Navigation />
       <Table>
         <Head name='id'>ID</Head>
-        <Head name='title'>
+        <Head name='title' editable={true}>
           <MdTextFields />
           제목
         </Head>
-        <Head name='url'>
+        <Head name='url' editable={true}>
           <HiLink />
           URL
         </Head>
@@ -36,7 +36,7 @@ const List = () => {
           <BiTable />
           소속
         </Head>
-        <Head name='description'>
+        <Head name='description' editable={true}>
           <MdTextFields />
           설명
         </Head>

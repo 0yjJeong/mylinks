@@ -6,6 +6,7 @@ export interface HeadProps {
   type?: string;
   classes?: string;
   rowLength?: number;
+  editable?: boolean;
   children?: React.ReactNode;
   mouseDown?: (index: number) => void;
 }

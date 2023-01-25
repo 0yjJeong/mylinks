@@ -11,6 +11,7 @@ interface ColumnProps {
   tableId: string;
   isSelected: boolean;
   focused: boolean;
+  editable: boolean;
 }
 
 const Column: React.FC<ColumnProps> = ({
@@ -20,6 +21,7 @@ const Column: React.FC<ColumnProps> = ({
   tableId,
   isSelected,
   focused,
+  editable,
 }) => {
   const ref = useRef<HTMLElement>();
   const queryClient = useQueryClient();
@@ -46,7 +48,9 @@ const Column: React.FC<ColumnProps> = ({
   );
 
   const onClick = useCallback(() => {
-    select({ id, name });
+    if (editable) {
+      select({ id, name });
+    }
   }, [id, name, select]);
 
   return (
@@ -56,7 +60,7 @@ const Column: React.FC<ColumnProps> = ({
     >
       <span
         ref={ref}
-        contentEditable
+        contentEditable={editable}
         suppressContentEditableWarning={true}
         data-id={id}
         data-name={name}

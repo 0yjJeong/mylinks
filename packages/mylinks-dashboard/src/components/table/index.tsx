@@ -135,6 +135,7 @@ const Table: React.FC<TableProps> = ({
             <tr key={row.id} className='contents'>
               {(childrenWithProps as React.ReactElement[]).map((child) => {
                 const name = child.props.name;
+                const editable = !!child.props.editable;
                 const nameInRow = name in row;
                 const rowSelected = !!selected && selected.id === row.id;
                 const isSelected = rowSelected && selected.name === name;
@@ -149,6 +150,7 @@ const Table: React.FC<TableProps> = ({
                     name={name}
                     tableId={id}
                     value={row[name]}
+                    editable={editable}
                   />
                 );
               })}

@@ -26,7 +26,7 @@ export const useEventStore = create<InitialState>((set, get) => ({
     const { selected, detectMouseEvent } = get();
     const { id, name } = (e.target as any).dataset;
     if (selected) {
-      if (id !== selected.id && name !== selected.name) {
+      if (id !== selected.id || name !== selected.name) {
         window.removeEventListener('mousedown', detectMouseEvent);
         set((state) => ({ ...state, focused: false }));
       }
