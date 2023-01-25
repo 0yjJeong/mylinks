@@ -19,7 +19,7 @@ export const initialState: InitialState = {
   unselect: null,
 };
 
-export const useDashboardStore = create<InitialState>((set, get) => ({
+export const useEventStore = create<InitialState>((set, get) => ({
   ...initialState,
   detectMouseEvent(e) {
     e.stopPropagation();

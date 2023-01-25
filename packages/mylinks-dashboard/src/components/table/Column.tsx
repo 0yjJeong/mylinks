@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useData } from '../../api';
-import { useDashboardStore } from '../../store/dashboard';
+import { useEventStore } from '../../store/event';
 import { RowRaw } from '../../types';
 
 interface ColumnProps {
@@ -24,7 +24,7 @@ const Column: React.FC<ColumnProps> = ({
   const ref = useRef<HTMLElement>();
   const queryClient = useQueryClient();
   const dashboard = useData();
-  const { select, unselect } = useDashboardStore();
+  const { select, unselect } = useEventStore();
 
   useEffect(() => {
     if (isSelected) {

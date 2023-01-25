@@ -9,7 +9,7 @@ import { MdAddCircle } from 'react-icons/md';
 import { useMutation, useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { useData } from '../../api';
-import { useDashboardStore } from '../../store/dashboard';
+import { useEventStore } from '../../store/event';
 import Column from './Column';
 
 import Head from './Head';
@@ -32,7 +32,7 @@ const Table: React.FC<TableProps> = ({
   const ref = useRef<HTMLTableElement>(null);
   const refs = useRef<React.MutableRefObject<HTMLElement>[]>([]);
 
-  const { selected, focused } = useDashboardStore();
+  const { selected, focused } = useEventStore();
 
   const { data, refetch } = useQuery(
     `dashboard/table/${id}/rows`,

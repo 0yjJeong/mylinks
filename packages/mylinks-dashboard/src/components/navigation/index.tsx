@@ -5,7 +5,6 @@ import uniqolor from 'uniqolor';
 import color from 'color';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { useData } from '../../api';
-import { useDashboardStore } from '../../store/dashboard';
 
 interface NavigationProps {}
 
@@ -59,8 +58,6 @@ const Navigation: React.FC<NavigationProps> = () => {
 interface PaginationProps {}
 
 export const Pagination: React.FC<PaginationProps> = () => {
-  const { total } = useDashboardStore();
-
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
@@ -70,7 +67,7 @@ export const Pagination: React.FC<PaginationProps> = () => {
   return (
     <div className='flex whitespace-nowrap pl-2 pr-3'>
       <span>
-        {total}개 중 {offset}-{offset + limit - 1}
+        개 중 {offset}-{offset + limit - 1}
       </span>
       <div className='pl-2 flex gap-1'>
         <button
