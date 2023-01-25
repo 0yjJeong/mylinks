@@ -9,6 +9,8 @@ import { MdAddCircle } from 'react-icons/md';
 import { useMutation, useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { useData } from '../../api';
+import { useDashboardStore } from '../../store/dashboard';
+import Column from './Column';
 
 import Head from './Head';
 
@@ -25,10 +27,12 @@ const Table: React.FC<TableProps> = ({
 }) => {
   const { id } = useParams();
   const dashboard = useData();
-  const [activeIndex, setActiveIndex] = useState<number>(null);
 
+  const [activeIndex, setActiveIndex] = useState<number>(null);
   const ref = useRef<HTMLTableElement>(null);
   const refs = useRef<React.MutableRefObject<HTMLElement>[]>([]);
+
+  const { selected, focused } = useDashboardStore();
 
   const { data, refetch } = useQuery(
     `dashboard/table/${id}/rows`,
@@ -131,20 +135,21 @@ const Table: React.FC<TableProps> = ({
             <tr key={row.id} className='contents'>
               {(childrenWithProps as React.ReactElement[]).map((child) => {
                 const name = child.props.name;
+                const nameInRow = name in row;
+                const rowSelected = !!selected && selected.id === row.id;
+                const isSelected = rowSelected && selected.name === name;
 
-                if (!(name in row)) {
-                  return null;
-                }
-
+                if (!nameInRow) return null;
                 return (
-                  <td
+                  <Column
                     key={name}
-                    className='flex items-center bg-white border-b-[1px] border-[#D5D5D5] h-10'
-                  >
-                    <span className='text-sm color-[#2C2C2C] pl-2 block whitespace-nowrap text-ellipsis overflow-hidden'>
-                      {row[name]}
-                    </span>
-                  </td>
+                    isSelected={isSelected}
+                    focused={focused}
+                    id={row.id}
+                    name={name}
+                    tableId={id}
+                    value={row[name]}
+                  />
                 );
               })}
             </tr>

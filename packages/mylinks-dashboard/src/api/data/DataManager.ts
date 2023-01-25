@@ -44,7 +44,7 @@ interface TDataManager {
   deleteTable(): Promise<DeleteTableResponse>;
   rows(): Promise<RowsResponse>;
   addRow(): Promise<AddRowResponse>;
-  editRow(link: Partial<RowRaw>): Promise<EditRowResponse>;
+  editRow(id: string, row: Partial<RowRaw>): Promise<EditRowResponse>;
   deleteRow(id: string): Promise<DeleteRowResponse>;
 }
 
@@ -62,7 +62,6 @@ export default class DataManager implements TDataManager {
   }
 
   async table(): Promise<TableResponse> {
-    console.log(`${this}`);
     const { data } = await axios.get<TableRaw>(`${this.baseUrl}/${this.id}`);
     return { data };
   }
@@ -80,7 +79,6 @@ export default class DataManager implements TDataManager {
   }
 
   async editTable(table: Partial<TableRaw>): Promise<EditTableResponse> {
-    console.log(`${this}`);
     const { data } = await axios.post<TableRaw>(
       `${this.baseUrl}/${this.id}`,
       table
@@ -109,9 +107,9 @@ export default class DataManager implements TDataManager {
     return { data };
   }
 
-  async editRow(row: Partial<RowRaw>): Promise<EditRowResponse> {
+  async editRow(id: string, row: Partial<RowRaw>): Promise<EditRowResponse> {
     const { data } = await axios.put<RowRaw>(
-      `${this.baseUrl}/${this.id}/row/${this.id}`,
+      `${this.baseUrl}/${this.id}/row/${id}`,
       row
     );
     return { data };
