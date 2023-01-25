@@ -4,22 +4,20 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MdDelete } from 'react-icons/md';
 import { AiFillFileAdd } from 'react-icons/ai';
 import { useData } from '../../api';
-import { ListRaw } from '../../types';
+import { RowRaw, TableRaw } from '../../types';
 
 const Header = () => {
   const { id } = useParams();
   const dashboard = useData();
-  const { data, isFetching } = useQuery(
-    `dashboard/link/${id}`,
+  const { data } = useQuery(
+    `dashboard/table/${id}`,
     () => {
-      return dashboard.list();
+      return dashboard.table();
     },
-    { refetchOnWindowFocus: false }
+    {
+      refetchOnWindowFocus: false,
+    }
   );
-
-  if (isFetching) {
-    return null;
-  }
 
   return (
     <div className='border-b-2 border-[#EEEEEE] box-border'>
@@ -27,11 +25,11 @@ const Header = () => {
         <TitleInput
           id={id}
           maxLength={30}
-          defaultValue={data.data.title}
-          editList={dashboard.editList}
+          defaultValue={data?.data.title ?? ''}
+          editList={dashboard.editTable}
         />
         <aside className='flex gap-6'>
-          <DeleteListButton deleteList={dashboard.deleteList} />
+          <DeleteListButton deleteList={dashboard.deleteTable} />
           <NewListButton />
         </aside>
       </div>
@@ -41,7 +39,7 @@ const Header = () => {
 
 interface TitleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
-  editList(list: Partial<ListRaw>): Promise<any>;
+  editList(list: Partial<RowRaw>): Promise<any>;
 }
 
 export const TitleInput: React.FC<TitleInputProps> = ({
@@ -49,12 +47,16 @@ export const TitleInput: React.FC<TitleInputProps> = ({
   editList,
   ...rest
 }) => {
+  const dashboard = useData();
   const queryClient = useQueryClient();
-  const mutation = useMutation((list: Partial<ListRaw>) => editList(list), {
-    onSuccess: () => {
-      queryClient.refetchQueries(`dashboard/link/${id}`);
-    },
-  });
+  const mutation = useMutation(
+    (table: Partial<TableRaw>) => dashboard.editTable(table),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries(`dashboard/table/${id}`);
+      },
+    }
+  );
 
   const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const list = { title: e.target.value };
