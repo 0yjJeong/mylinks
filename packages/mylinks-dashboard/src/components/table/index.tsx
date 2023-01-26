@@ -125,7 +125,8 @@ const Table: React.FC<TableProps> = ({
         style={{
           gridTemplateColumns: `repeat(${childrenWithProps.length}, minmax(${minCellWidth}px,3fr))`,
         }}
-        className={`overflow-auto absolute top-0 bottom-0 content-start grid grid-cols-[${cols}]`}
+        // position:sticky is always worked on
+        className={`overflow-auto absolute top-0 bottom-0 w-full content-start grid grid-cols-[${cols}]`}
       >
         <thead className='contents'>
           <tr className='contents'>{childrenWithProps}</tr>
@@ -133,27 +134,31 @@ const Table: React.FC<TableProps> = ({
         <tbody className='contents'>
           {data?.data.map((row) => (
             <tr key={row.id} className='contents'>
-              {(childrenWithProps as React.ReactElement[]).map((child) => {
-                const name = child.props.name;
-                const editable = !!child.props.editable;
-                const nameInRow = name in row;
-                const rowSelected = !!selected && selected.id === row.id;
-                const isSelected = rowSelected && selected.name === name;
+              {(childrenWithProps as React.ReactElement[]).map(
+                (child, index) => {
+                  const name = child.props.name;
+                  const editable = !!child.props.editable;
+                  const nameInRow = name in row;
+                  const rowSelected = !!selected && selected.id === row.id;
+                  const isSelected = rowSelected && selected.name === name;
+                  const classes = index === 0 && 'sticky left-0';
 
-                if (!nameInRow) return null;
-                return (
-                  <Column
-                    key={name}
-                    isSelected={isSelected}
-                    focused={focused}
-                    id={row.id}
-                    name={name}
-                    tableId={id}
-                    value={row[name]}
-                    editable={editable}
-                  />
-                );
-              })}
+                  if (!nameInRow) return null;
+                  return (
+                    <Column
+                      key={name}
+                      isSelected={isSelected}
+                      focused={focused}
+                      id={row.id}
+                      name={name}
+                      tableId={id}
+                      value={row[name]}
+                      editable={editable}
+                      classes={classes}
+                    />
+                  );
+                }
+              )}
             </tr>
           ))}
           <tr className='contents'>
@@ -164,7 +169,7 @@ const Table: React.FC<TableProps> = ({
                   <td
                     key={index}
                     className={`flex items-center bg-[#EFEFEF] border-b-[1px] border-[#D5D5D5] h-10 ${isFirstCell &&
-                      'cursor-pointer hover:bg-[#E8E8E8]'}`}
+                      'sticky left-0 z-20 cursor-pointer hover:bg-[#E8E8E8]'}`}
                     onClick={(e) => {
                       e.preventDefault();
                       if (isFirstCell) {

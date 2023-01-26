@@ -12,6 +12,7 @@ interface ColumnProps {
   isSelected: boolean;
   focused: boolean;
   editable: boolean;
+  classes?: string;
 }
 
 const Column: React.FC<ColumnProps> = ({
@@ -22,6 +23,7 @@ const Column: React.FC<ColumnProps> = ({
   isSelected,
   focused,
   editable,
+  classes = '',
 }) => {
   const ref = useRef<HTMLElement>();
   const queryClient = useQueryClient();
@@ -55,7 +57,7 @@ const Column: React.FC<ColumnProps> = ({
 
   return (
     <td
-      className='flex items-center bg-white border-b-[1px] border-[#D5D5D5] mr-[1px]'
+      className={`flex items-center bg-white border-b-[1px] border-[#D5D5D5] mr-[1px] ${classes}`}
       onClick={onClick}
     >
       <span

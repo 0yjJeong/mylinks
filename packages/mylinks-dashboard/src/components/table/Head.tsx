@@ -21,14 +21,15 @@ const Head = React.forwardRef<HTMLTableCellElement, HeadProps>((props, ref) => {
   return (
     <th
       ref={ref}
-      className={`flex items-center relative select-none text-left h-10 border-b-[1px] border-[#D5D5D5]`}
+      className={`flex items-center relative select-none text-left h-10 border-b-[1px] border-[#D5D5D5] bg-[#F6F6F6] ${index ===
+        0 && 'sticky left-0 z-30'}`}
     >
       <span className='flex items-center gap-2 pl-2 text-sm color-[#2C2C2C]'>
         {children}
       </span>
       <div
         style={{ height: `${(rowLength + 2) * 40}px` }}
-        className={`bg-[#D5D5D5] w-[1px] z-10 cursor-col-resize absolute top-0 bottom-0 right-0`}
+        className={`bg-[#D5D5D5] w-[1px] cursor-col-resize absolute top-0 bottom-0 right-0`}
         onMouseDown={onMouseDown}
       />
     </th>
