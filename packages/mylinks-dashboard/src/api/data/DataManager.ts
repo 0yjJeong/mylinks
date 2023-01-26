@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { TableRaw, RowRaw } from '../../types';
 
+export type MetadataResponse = {
+  data: Partial<RowRaw>;
+};
+
 export type TableResponse = {
   data: TableRaw;
 };
@@ -35,6 +39,7 @@ export type EditRowResponse = {
 export type DeleteRowResponse = {};
 
 interface TDataManager {
+  matadata(url: string): Promise<MetadataResponse>;
   table(): Promise<TableResponse>;
   refTable(): Promise<RefTableResponse>;
   addTable(list: Partial<TableRaw>): Promise<AddTableResponse>;
@@ -59,6 +64,14 @@ export default class DataManager implements TDataManager {
 
   get baseUrl() {
     return `${this.apiUrl}/dashboard/table`;
+  }
+
+  async matadata(url: string): Promise<MetadataResponse> {
+    const { data } = await axios.post<RowRaw>(
+      `${this.apiUrl}/dashboard/metadata`,
+      { url }
+    );
+    return { data };
   }
 
   async table(): Promise<TableResponse> {

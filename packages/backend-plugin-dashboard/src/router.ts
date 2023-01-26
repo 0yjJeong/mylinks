@@ -7,7 +7,7 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
   const router = Router();
 
   // PATH: /metadata
-  router.get('/metadata', async (req, res) => {
+  router.post('/metadata', async (req, res) => {
     const { url } = req.body;
     const metadata = new Metadata(url);
     const result = await metadata.getMetadata();
