@@ -78,11 +78,13 @@ const Column: React.FC<ColumnProps> = ({
           title: data.title,
           description: data.description,
           url: data.url,
+        };
       } else {
         if (innerText !== value) {
           row = { [name]: innerText };
         }
       }
+
       if (row) {
         mutation.mutate(row);
       }
