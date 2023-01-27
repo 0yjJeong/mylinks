@@ -54,11 +54,11 @@ export default class Database implements Resource {
     return lists;
   }
 
-  async rows(options): Promise<Result[]> {
+  async rows(id: ID, options): Promise<Result[]> {
     const tx = this.database<Result>('rows');
 
     if (options?.filter) {
-      tx.whereIn('list_id', options?.filter);
+      tx.whereIn('list_id', [id, ...options?.filter]);
     }
     this.count = (
       await tx

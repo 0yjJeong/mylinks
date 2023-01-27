@@ -7,7 +7,7 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
   const router = Router();
 
   // PATH: /metadata
-  router.get('/metadata', async (req, res) => {
+  router.post('/metadata', async (req, res) => {
     const { url } = req.body;
     const metadata = new Metadata(url);
     const result = await metadata.getMetadata();
@@ -50,6 +50,7 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
         pagination = { offset, limit },
         sort = { field, order },
       } = req.query;
+      console.log(req.query, field, order, sort);
       const links = await dashboard.rows(table_id, {
         pagination,
         sort,

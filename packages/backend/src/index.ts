@@ -29,6 +29,7 @@ async function run() {
     app.use(cors({ origin: process.env.CLIENT_URL }));
   }
   app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
   app.use('/dashboard', await dashboard(dashboardEnv()));
 
   app.use('/ping', (req, res) => {
