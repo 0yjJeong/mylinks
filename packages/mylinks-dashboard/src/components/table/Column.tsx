@@ -61,24 +61,30 @@ const Column: React.FC<ColumnProps> = ({
   useEffect(() => {
     if (isSelected) {
       if (!focused) {
-        removeEventListener(name, value);
+        removeEventListener(name);
       }
     }
   }, [isSelected, focused]);
 
   const removeEventListener = useCallback(
-    async (name: string, value: string) => {
+    async (name: string) => {
       unselect();
+
+      let row = null;
       const innerText = ref.current.innerText;
       if (name === 'url' && !value) {
         const { data } = await dashboard.matadata(innerText);
-        mutation.mutate({
+        row = {
           title: data.title,
           description: data.description,
           url: data.url,
-        });
       } else {
-        mutation.mutate({ [name]: value });
+        if (innerText !== value) {
+          row = { [name]: innerText };
+        }
+      }
+      if (row) {
+        mutation.mutate(row);
       }
     },
     [unselect]
