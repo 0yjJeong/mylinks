@@ -106,7 +106,7 @@ export default class DataManager implements TDataManager {
 
   async rows(): Promise<RowsResponse> {
     const { headers, data } = await axios.get<RowRaw[]>(
-      `${this.baseUrl}/${this.id}/rows?${location.search}`
+      `${this.baseUrl}/${this.id}/rows${location.search}`
     );
     const count = parseInt(headers['x-total-count'], 10);
     return { data, count };

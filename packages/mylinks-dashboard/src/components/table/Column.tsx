@@ -39,11 +39,7 @@ const Column: React.FC<ColumnProps> = ({
     }
   );
 
-  /**
-   * Initialize content editor
-   */
   useEffect(() => {
-    // we only want to paste text in type text/plain
     if (ref.current) {
       ref.current.addEventListener('paste', onPaste);
     }
@@ -58,7 +54,7 @@ const Column: React.FC<ColumnProps> = ({
     const clipboardData = e.clipboardData;
     if (clipboardData) {
       const getText = clipboardData.getData('text/plain');
-      document.execCommand('insertText', false, getText);
+      document.execCommand('insertText', false, getText.trim());
     }
   };
 
@@ -96,7 +92,8 @@ const Column: React.FC<ColumnProps> = ({
 
   return (
     <td
-      className={`flex items-center bg-white border-b-[1px] border-[#D5D5D5] mr-[1px] ${classes}`}
+      className={`flex items-center bg-white border-b-[1px] border-[#D5D5D5] mr-[1px] ${classes} ${isSelected &&
+        'w-fit z-30'}`}
       onClick={onClick}
     >
       <span
@@ -106,7 +103,7 @@ const Column: React.FC<ColumnProps> = ({
         data-id={id}
         data-name={name}
         className={`py-[9px] pl-2 h-[37px] text-sm leading-[19px] outline-none w-full color-[#2C2C2C] block whitespace-nowrap text-ellipsis overflow-hidden ${isSelected &&
-          'rounded-sm border-[1px] border-[#2057e3] text-clip'}`}
+          'rounded-sm border-[1px] border-[#2057e3] text-clip pr-2'}`}
       >
         {(value ?? '').trim()}
       </span>

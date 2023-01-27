@@ -125,7 +125,9 @@ const Table: React.FC<TableProps> = ({
         style={{
           gridTemplateColumns: `repeat(${childrenWithProps.length}, minmax(${minCellWidth}px,3fr))`,
         }}
-        // position:sticky is always worked on
+        /**
+         * position:sticky always behave on parent's scroll container, so table must have full width size.
+         */
         className={`overflow-auto absolute top-0 bottom-0 w-full content-start grid grid-cols-[${cols}]`}
       >
         <thead className='contents'>
@@ -141,7 +143,7 @@ const Table: React.FC<TableProps> = ({
                   const nameInRow = name in row;
                   const rowSelected = !!selected && selected.id === row.id;
                   const isSelected = rowSelected && selected.name === name;
-                  const classes = index === 0 && 'sticky left-0';
+                  const classes = index === 0 && 'sticky left-0 z-40';
 
                   if (!nameInRow) return null;
                   return (
