@@ -75,8 +75,8 @@ const Column: React.FC<ColumnProps> = ({
       if (name === 'url' && !value) {
         const { data } = await dashboard.matadata(innerText);
         row = {
-          title: data.title,
-          description: data.description,
+          title: data.title.slice(0, 15),
+          description: data.description.slice(0, 45),
           url: data.url,
         };
       } else {

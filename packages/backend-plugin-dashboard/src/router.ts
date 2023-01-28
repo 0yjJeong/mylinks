@@ -42,15 +42,14 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
     .get('/table/:table_id/rows', async (req, res) => {
       const { table_id } = req.params;
       const {
-        offset,
-        limit,
-        field,
-        order,
+        offset = 0,
+        limit = 15,
+        field = 'created_at',
+        order = 'desc',
         filter,
         pagination = { offset, limit },
         sort = { field, order },
       } = req.query;
-      console.log(req.query, field, order, sort);
       const links = await dashboard.rows(table_id, {
         pagination,
         sort,

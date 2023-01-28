@@ -57,9 +57,11 @@ export default class Database implements Resource {
   async rows(id: ID, options): Promise<Result[]> {
     const tx = this.database<Result>('rows');
 
+    tx.whereIn('table_id', [id]);
     if (options?.filter) {
-      tx.whereIn('list_id', [id, ...options?.filter]);
+      tx.orWhereIn('table_id', options?.filter);
     }
+
     this.count = (
       await tx
         .clone()

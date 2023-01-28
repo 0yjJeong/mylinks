@@ -5,6 +5,7 @@ import uniqolor from 'uniqolor';
 import color from 'color';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { useData } from '../../api';
+import { useDashboardStore } from '../../store/dashboard';
 
 interface NavigationProps {}
 
@@ -58,6 +59,8 @@ const Navigation: React.FC<NavigationProps> = () => {
 interface PaginationProps {}
 
 export const Pagination: React.FC<PaginationProps> = () => {
+  const { total } = useDashboardStore();
+
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
@@ -65,15 +68,10 @@ export const Pagination: React.FC<PaginationProps> = () => {
   const limit = parseInt(searchParams.get('limit'), 10) || 10;
 
   return (
-    <div className='flex whitespace-nowrap pl-2 pr-3'>
-      <span>
-        개 중 {offset}-{offset + limit - 1}
-      </span>
+    <div className='flex whitespace-nowrap pl-2 pr-3 mt-2 mb-2'>
       <div className='pl-2 flex gap-1'>
         <button
-          className={`w-6 flex items-center justify-center border-2 border-[#EEEEEE] ${
-            offset - limit < 0 ? 'pointer-events-none' : 'pointer-events-auto'
-          }`}
+          className={`w-6 flex items-center justify-center text-[#999999] hover:text-[#2C2C2C]`}
         >
           <Link
             to={`${location.pathname}?offset=${offset - limit}&limit=${limit}`}
@@ -81,7 +79,15 @@ export const Pagination: React.FC<PaginationProps> = () => {
             <MdKeyboardArrowLeft />
           </Link>
         </button>
-        <button className='w-6 flex items-center justify-center border-2 border-[#EEEEEE]'>
+        <span>
+          <strong className='font-medium'>{total}</strong>개 중
+          <span className='pl-1'>
+            <span className='inline-flex p-1 h-5 items-center justify-center rounded-md'>
+              {offset}-{offset + limit - 1 > total ? total : offset + limit - 1}
+            </span>
+          </span>
+        </span>
+        <button className='w-6 flex items-center justify-center text-[#999999] hover:text-[#2C2C2C]'>
           <Link
             to={`${location.pathname}?offset=${offset + limit}&limit=${limit}`}
           >

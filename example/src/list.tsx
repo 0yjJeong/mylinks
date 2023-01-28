@@ -10,13 +10,15 @@ import { HiLink } from 'react-icons/hi';
 import { BsFillCalendarDateFill } from 'react-icons/bs';
 import { BiTable } from 'react-icons/bi';
 
+import logo from './assets/logo.png';
+
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const List = () => {
   const dataManager = new DataManager(apiUrl);
   return (
     <Wrapper dataManager={dataManager}>
-      <Header />
+      <Header logo={logo} />
       <Navigation />
       <Table>
         <Head name='id'>ID</Head>

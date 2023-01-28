@@ -9,6 +9,7 @@ import { MdAddCircle } from 'react-icons/md';
 import { useMutation, useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { useData } from '../../api';
+import { useDashboardStore } from '../../store/dashboard';
 import { useEventStore } from '../../store/event';
 import Column from './Column';
 
@@ -27,6 +28,8 @@ const Table: React.FC<TableProps> = ({
 }) => {
   const { id } = useParams();
   const dashboard = useData();
+
+  const { initTotal } = useDashboardStore();
 
   const [activeIndex, setActiveIndex] = useState<number>(null);
   const ref = useRef<HTMLTableElement>(null);
@@ -47,6 +50,10 @@ const Table: React.FC<TableProps> = ({
       refetch();
     },
   });
+
+  useEffect(() => {
+    initTotal(data.count);
+  }, [data.count, initTotal]);
 
   useEffect(() => {
     if (activeIndex !== null) {
@@ -117,7 +124,7 @@ const Table: React.FC<TableProps> = ({
 
   return (
     <div
-      style={{ height: 'calc(100% - 84px)' }}
+      style={{ height: 'calc(100% - 92px)' }}
       className='w-full relative overflow-auto bg-[#F6F6F6]'
     >
       <table
