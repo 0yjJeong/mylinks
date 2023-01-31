@@ -31,7 +31,8 @@ const Head = React.forwardRef<HTMLTableCellElement, HeadProps>((props, ref) => {
     >
       {index === 0 && (
         <span
-          className='ml-2 w-4 cursor-pointer relative bg-white rounded border-[1px] border-[#D5D5D5] after:content-[""] after:block after:pb-[100%]'
+          className={`ml-2 w-4 flex items-center justify-center cursor-pointer relative bg-white rounded border-[1px] border-[#D5D5D5] after:content-[""] after:block after:pb-[100%] ${total ===
+            selectedRows.length && 'bg-[#2bba51] text-white border-none'}`}
           onClick={selectAll}
         >
           {total === selectedRows.length && (

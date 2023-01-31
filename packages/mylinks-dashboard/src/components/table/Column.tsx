@@ -123,7 +123,8 @@ const Column: React.FC<ColumnProps> = ({
     >
       {index === 0 && (
         <span
-          className='ml-2 w-4 cursor-pointer relative bg-white rounded border-[1px] border-[#D5D5D5] after:content-[""] after:block after:pb-[100%]'
+          className={`ml-2 w-4 flex items-center justify-center cursor-pointer relative bg-white rounded border-[1px] border-[#D5D5D5] after:content-[""] after:block after:pb-[100%] ${rowSelected &&
+            'bg-[#2bba51] text-white border-none'}`}
           onClick={() => toggleRow(rowId)}
         >
           {rowSelected && <BsCheck className='absolute text-sm' />}
