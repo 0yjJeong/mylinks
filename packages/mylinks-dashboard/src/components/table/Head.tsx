@@ -1,4 +1,6 @@
 import React, { useCallback } from 'react';
+import { BsCheck } from 'react-icons/bs';
+import { useDashboardStore } from '../../store/dashboard';
 
 export interface HeadProps {
   name: string;
@@ -9,10 +11,13 @@ export interface HeadProps {
   editable?: boolean;
   children?: React.ReactNode;
   mouseDown?: (index: number) => void;
+  selectAll?: () => void;
 }
 
 const Head = React.forwardRef<HTMLTableCellElement, HeadProps>((props, ref) => {
-  const { index, rowLength = 0, children, mouseDown } = props;
+  const { index, rowLength = 0, children, mouseDown, selectAll } = props;
+
+  const { total, selectedRows } = useDashboardStore();
 
   const onMouseDown = useCallback(() => {
     mouseDown(index);
@@ -24,6 +29,16 @@ const Head = React.forwardRef<HTMLTableCellElement, HeadProps>((props, ref) => {
       className={`flex items-center relative select-none text-left h-10 border-b-[1px] border-[#D5D5D5] bg-[#F6F6F6] ${index ===
         0 && 'sticky left-0 z-30'}`}
     >
+      {index === 0 && (
+        <span
+          className='ml-2 w-4 cursor-pointer relative bg-white rounded border-[1px] border-[#D5D5D5] after:content-[""] after:block after:pb-[100%]'
+          onClick={selectAll}
+        >
+          {total === selectedRows.length && (
+            <BsCheck className='absolute text-sm' />
+          )}
+        </span>
+      )}
       <span className='flex items-center gap-2 pl-2 text-sm color-[#2C2C2C]'>
         {children}
       </span>
