@@ -29,4 +29,5 @@ export interface Resource {
    */
   rows(id: ID, options: any): Promise<Result[]>;
   addRow(id: ID, item: Result): Promise<Result>;
+  deleteRows(ids: ID[]): Promise<void>;
 }

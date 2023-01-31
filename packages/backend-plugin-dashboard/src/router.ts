@@ -85,6 +85,11 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
       const { id } = req.params;
       await dashboard.deleteItem('rows', id);
       res.status(200).send();
+    })
+    .post('/table/:table_id/rows', async (req, res) => {
+      const { ids } = req.body;
+      await dashboard.deleteRows(ids);
+      res.status(200).send();
     });
 
   return router;

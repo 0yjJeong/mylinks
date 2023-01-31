@@ -92,4 +92,10 @@ export default class Database implements Resource {
     });
     return this.getOne('rows', id);
   }
+
+  async deleteRows(ids: ID[]): Promise<void> {
+    await this.database<Result>('rows')
+      .whereIn('id', ids)
+      .delete();
+  }
 }

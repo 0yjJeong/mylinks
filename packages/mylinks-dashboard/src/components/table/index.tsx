@@ -36,6 +36,7 @@ const Table: React.FC<TableProps> = ({
   const refs = useRef<React.MutableRefObject<HTMLElement>[]>([]);
 
   const { selected, focused } = useEventStore();
+  const { setSelectedRows } = useDashboardStore();
 
   const { data, refetch } = useQuery(
     `dashboard/table/${id}/rows`,
@@ -109,6 +110,11 @@ const Table: React.FC<TableProps> = ({
         index,
         rowLength: data?.data.length ?? rows?.length,
         mouseDown,
+        selectAll:
+          index === 0 &&
+          (() => {
+            setSelectedRows(data.data.map((r) => r.id));
+          }),
       });
     }
     return child;
@@ -141,14 +147,14 @@ const Table: React.FC<TableProps> = ({
           <tr className='contents'>{childrenWithProps}</tr>
         </thead>
         <tbody className='contents'>
-          {data?.data.map((row) => (
-            <tr key={row.id} className='contents'>
+          {data?.data.map((...row) => (
+            <tr key={row[0].id} className='contents'>
               {(childrenWithProps as React.ReactElement[]).map(
                 (child, index) => {
                   const name = child.props.name;
                   const editable = !!child.props.editable;
-                  const nameInRow = name in row;
-                  const rowSelected = !!selected && selected.id === row.id;
+                  const nameInRow = name in row[0];
+                  const rowSelected = !!selected && selected.id === row[0].id;
                   const isSelected = rowSelected && selected.name === name;
                   const classes = index === 0 && 'sticky left-0 z-40';
 
@@ -156,13 +162,15 @@ const Table: React.FC<TableProps> = ({
                   return (
                     <Column
                       key={name}
+                      index={index}
                       isSelected={isSelected}
                       focused={focused}
-                      id={row.id}
+                      rowId={row[0].id}
                       name={name}
                       tableId={id}
-                      value={row[name]}
+                      value={row[0][name]}
                       editable={editable}
+                      nextRowId={data?.data[row[1] + 1]?.id}
                       classes={classes}
                     />
                   );

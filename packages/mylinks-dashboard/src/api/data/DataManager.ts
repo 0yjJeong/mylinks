@@ -38,6 +38,8 @@ export type EditRowResponse = {
 
 export type DeleteRowResponse = {};
 
+export type DeleteRowsResponse = void;
+
 interface TDataManager {
   matadata(url: string): Promise<MetadataResponse>;
   table(): Promise<TableResponse>;
@@ -51,6 +53,7 @@ interface TDataManager {
   addRow(): Promise<AddRowResponse>;
   editRow(id: string, row: Partial<RowRaw>): Promise<EditRowResponse>;
   deleteRow(id: string): Promise<DeleteRowResponse>;
+  deleteRows(ids: string[]): Promise<DeleteRowsResponse>;
 }
 
 export default class DataManager implements TDataManager {
@@ -133,5 +136,9 @@ export default class DataManager implements TDataManager {
       `${this.baseUrl}/${this.id}/row/${id}`
     );
     return { data };
+  }
+
+  async deleteRows(ids: string[]): Promise<void> {
+    await axios.post<void>(`${this.baseUrl}/${this.id}/rows`, { ids });
   }
 }
