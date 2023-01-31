@@ -29,14 +29,12 @@ const Table: React.FC<TableProps> = ({
   const { id } = useParams();
   const dashboard = useData();
 
-  const { initTotal } = useDashboardStore();
-
   const [activeIndex, setActiveIndex] = useState<number>(null);
   const ref = useRef<HTMLTableElement>(null);
   const refs = useRef<React.MutableRefObject<HTMLElement>[]>([]);
 
   const { selected, focused } = useEventStore();
-  const { setSelectedRows } = useDashboardStore();
+  const { initTotal, setSelectedRows } = useDashboardStore();
 
   const { data, refetch } = useQuery(
     `dashboard/table/${id}/rows`,

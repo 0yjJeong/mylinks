@@ -59,6 +59,14 @@ const Column: React.FC<ColumnProps> = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (isSelected) {
+      if (!focused) {
+        removeEventListener(name);
+      }
+    }
+  }, [isSelected, focused]);
+
   const onPaste = (e: ClipboardEvent) => {
     e.preventDefault();
     const clipboardData = e.clipboardData;
@@ -67,14 +75,6 @@ const Column: React.FC<ColumnProps> = ({
       document.execCommand('insertText', false, getText.trim());
     }
   };
-
-  useEffect(() => {
-    if (isSelected) {
-      if (!focused) {
-        removeEventListener(name);
-      }
-    }
-  }, [isSelected, focused]);
 
   const removeEventListener = useCallback(
     async (name: string) => {
