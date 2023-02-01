@@ -50,7 +50,7 @@ interface TDataManager {
   ): Promise<EditTableResponse>;
   deleteTable(): Promise<DeleteTableResponse>;
   rows(): Promise<RowsResponse>;
-  addRow(): Promise<AddRowResponse>;
+  addRow(tableId: string): Promise<AddRowResponse>;
   editRow(id: string, row: Partial<RowRaw>): Promise<EditRowResponse>;
   deleteRow(id: string): Promise<DeleteRowResponse>;
   deleteRows(ids: string[]): Promise<DeleteRowsResponse>;
@@ -115,10 +115,10 @@ export default class DataManager implements TDataManager {
     return { data, count };
   }
 
-  async addRow(): Promise<AddRowResponse> {
+  async addRow(tableId: string): Promise<AddRowResponse> {
     const { data } = await axios.post<RowRaw>(
-      `${this.baseUrl}/${this.id}/row`,
-      { table_id: this.id }
+      `${this.baseUrl}/${tableId}/row`,
+      { tableId }
     );
     return { data };
   }

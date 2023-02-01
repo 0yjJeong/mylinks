@@ -5,6 +5,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path='/table' element={<List />} />
         <Route path='/table/:id' element={<List />} />
         <Route index element={<>Home</>} />
       </Routes>

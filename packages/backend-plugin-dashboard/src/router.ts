@@ -62,18 +62,18 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
         .send(links);
     })
     .post('/table/:table_id/row', async (req, res) => {
-      const { table_id } = req.params;
+      const { tableId } = req.body;
       if (req.body.url) {
         const fromClient = getOrigin(clientUrl) === getOrigin(req.body.url);
         if (fromClient) {
           const result = await dashboard.addOrUpdateItem('table_to_tables', {
-            source_id: table_id,
+            source_id: tableId,
             target_id: getListId(req.body.url),
           });
           return res.status(200).send(result);
         }
       }
-      const result = await dashboard.addRow(table_id, req.body);
+      const result = await dashboard.addRow(tableId, req.body);
       res.status(200).send(result);
     })
     .put('/table/:table_id/row/:id', async (req, res) => {

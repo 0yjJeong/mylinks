@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { MdAddCircle } from 'react-icons/md';
 import { useMutation, useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useData } from '../../api';
 import { useDashboardStore } from '../../store/dashboard';
 import { useEventStore } from '../../store/event';
@@ -29,6 +29,8 @@ const Table: React.FC<TableProps> = ({
   const { id } = useParams();
   const dashboard = useData();
 
+  const navigate = useNavigate();
+
   const [activeIndex, setActiveIndex] = useState<number>(null);
   const ref = useRef<HTMLTableElement>(null);
   const refs = useRef<React.MutableRefObject<HTMLElement>[]>([]);
@@ -41,10 +43,14 @@ const Table: React.FC<TableProps> = ({
     () => {
       return dashboard.rows();
     },
-    { initialData: { data: [], count: 0 }, refetchOnWindowFocus: false }
+    {
+      enabled: !!id,
+      initialData: { data: [], count: 0 },
+      refetchOnWindowFocus: false,
+    }
   );
 
-  const mutation = useMutation(() => dashboard.addRow(), {
+  const mutation = useMutation(() => dashboard.addRow(id), {
     onSuccess: () => {
       refetch();
     },
@@ -185,8 +191,15 @@ const Table: React.FC<TableProps> = ({
                     key={index}
                     className={`flex items-center bg-[#EFEFEF] border-b-[1px] border-[#D5D5D5] h-10 ${isFirstCell &&
                       'sticky left-0 z-20 cursor-pointer hover:bg-[#E8E8E8]'}`}
-                    onClick={(e) => {
+                    onClick={async (e) => {
                       e.preventDefault();
+                      // If this table is not created, we should create table at first
+                      if (!id) {
+                        const table = await dashboard.addTable({ title: '' });
+                        await dashboard.addRow(table.data.id);
+                        navigate(`/table/${table.data.id}`);
+                      }
+
                       if (isFirstCell) {
                         mutation.mutate();
                       }

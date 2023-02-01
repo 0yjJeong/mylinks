@@ -18,6 +18,7 @@ const Header: React.FC<HeaderProps> = ({ logo = '' }) => {
       return dashboard.table();
     },
     {
+      enabled: !!id,
       refetchOnWindowFocus: false,
     }
   );
@@ -35,10 +36,10 @@ const Header: React.FC<HeaderProps> = ({ logo = '' }) => {
           id={id}
           maxLength={30}
           defaultValue={data?.data.title ?? ''}
-          editList={dashboard.editTable}
+          placeholder='제목을 입력하세요'
         />
-        <aside className='flex gap-6'>
-          <DeleteListButton deleteList={dashboard.deleteTable} />
+        <aside className='flex items-center gap-6'>
+          {!!id && <DeleteListButton deleteList={dashboard.deleteTable} />}
           <NewListButton />
         </aside>
       </div>
@@ -47,15 +48,11 @@ const Header: React.FC<HeaderProps> = ({ logo = '' }) => {
 };
 
 interface TitleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  id: string;
-  editList(list: Partial<RowRaw>): Promise<any>;
+  id: string | undefined;
 }
 
-export const TitleInput: React.FC<TitleInputProps> = ({
-  id,
-  editList,
-  ...rest
-}) => {
+export const TitleInput: React.FC<TitleInputProps> = ({ id, ...rest }) => {
+  const navigate = useNavigate();
   const dashboard = useData();
   const queryClient = useQueryClient();
   const mutation = useMutation(
@@ -67,9 +64,14 @@ export const TitleInput: React.FC<TitleInputProps> = ({
     }
   );
 
-  const onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    const list = { title: e.target.value };
-    mutation.mutate(list);
+  const onBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (id) {
+      mutation.mutate({ title: value });
+    } else {
+      const table = await dashboard.addTable({ title: value });
+      navigate(`/table/${table.data.id}`);
+    }
   };
 
   return (
@@ -101,7 +103,7 @@ export const DeleteListButton: React.FC<DeleteListButtonProps> = ({
 
   return (
     <button
-      className='flex items-center gap-1 px-1 py-2 text-[#999999] hover:text-[#2C2C2C] text-sm md:text-xl'
+      className='flex items-center gap-1 px-1 text-[#999999] hover:text-[#2C2C2C] text-sm md:text-xl'
       onClick={onClick}
     >
       <span>삭제</span>
@@ -115,11 +117,9 @@ export const NewListButton: React.FC<NewListButtonProps> = () => {
   return (
     <Link
       to='/list'
-      className='relative w-8 rounded-md bg-[#e8e9ff] hover:bg-[#dedffc] after:content-[""] after:block after:pb-[100%]'
+      className='relative rounded-md bg-[#e8e9ff] flex justify-center items-center w-8 h-8 hover:bg-[#dedffc] after:content-[""] after:block after:pb-[100%]'
     >
-      <span className='absolute w-full h-full flex items-center justify-center'>
-        <AiOutlinePlus className='text-[#4b52db]' />
-      </span>
+      <AiOutlinePlus className='text-[#4b52db]' />
     </Link>
   );
 };

@@ -4,7 +4,7 @@ export async function up(knex: Knex) {
   return knex.schema
     .createTable('tables', (table) => {
       table.uuid('id').primary();
-      table.string('title').notNullable();
+      table.string('title');
       table.timestamp('created_at').defaultTo(knex.fn.now());
     })
     .createTable('table_to_tables', (table) => {

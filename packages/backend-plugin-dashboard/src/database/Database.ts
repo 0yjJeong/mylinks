@@ -19,14 +19,17 @@ export default class Database implements Resource {
     resourceName: string,
     data: any,
     id?: ID
-  ): Promise<void> {
-    await this.database.transaction(async (tx) => {
-      await tx(resourceName)
+  ): Promise<any> {
+    return await this.database.transaction(async (tx) => {
+      return await tx(resourceName)
         .where({ id })
         .update(data)
-        .catch(() => tx(resourceName).insert({ ...data, id: uuidv4() }));
+        .catch(async () => {
+          const id = uuidv4();
+          await tx(resourceName).insert({ ...data, id });
+          return { ...data, id };
+        });
     });
-    return data;
   }
 
   async deleteItem(name: string, id: ID): Promise<void> {
@@ -82,6 +85,7 @@ export default class Database implements Resource {
 
   async addRow(tableId: ID, item: Result): Promise<Result> {
     const id = uuidv4();
+    console.log(id, tableId);
     await this.database<Result>('rows').insert({
       id,
       url: item.url || null,
