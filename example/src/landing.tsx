@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { GoSmiley } from 'react-icons/go';
 import Header from './components/header';
+import Form from './components/form';
 
 import image from './assets/bg-image-1.jpg';
+import { useState } from 'react';
 
 const Landing = () => {
   return (
@@ -18,8 +20,8 @@ const Landing = () => {
             를 하나의 테이블에서 관리하세요!
           </h1>
           <h2 className='mb-4 text-base'>
-            링크를 그저 저장하는 것이 아닌 테이블 형식으로 관리하여 한 눈에 보기
-            쉽게 링크 리스트를 관리할 수 있습니다.
+            링크를 테이블 형식으로 관리하여 한 눈에 보기 쉽게 여러분의 링크
+            목록을 관리할 수 있습니다.
           </h2>
           <Link to='/table'>
             <button className='px-4 py-2 rounded-md border-2 border-[#2C2C2C] text-[#2C2C2C] inline-flex items-center md:w-full hover:bg-[#2C2C2C] hover:text-white'>
@@ -33,12 +35,44 @@ const Landing = () => {
               </div>
             </button>
           </Link>
+          <div className='mt-20'>
+            <div className='flex items-center gap-4'>
+              <span className='w-full h-[1px] border-[1px] border-[#EEEEEE]' />
+              or
+              <span className='w-full h-[1px] border-[1px] border-[#EEEEEE]' />
+            </div>
+            <div className='mt-14'>
+              <TableForm />
+            </div>
+          </div>
         </div>
-        <div className='max-w-3xl mt-4 md:mt-0'>
+        <div className='max-w-3xl mt-10 md:mt-0'>
           <img src={image} />
         </div>
       </div>
     </div>
+  );
+};
+
+const TableForm = () => {
+  const [id, setId] = useState('');
+  return (
+    <form className='border-b-2 border-[#616161] relative'>
+      <input
+        className='px-4 py-2 w-full outline-none '
+        placeholder='테이블 아이디를 입력하세요'
+        onChange={(e) => {
+          setId(e.target.value);
+        }}
+      />
+      {id && (
+        <Link to={`/table/${id}`}>
+          <button className='absolute top-0 right-0 bottom-0 text-white bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500'>
+            이동하기
+          </button>
+        </Link>
+      )}
+    </form>
   );
 };
 
