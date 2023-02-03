@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { GrTableAdd } from 'react-icons/gr';
 
-import logo from '../../assets/logo.png';
+interface HeaderProps {
+  logo: string;
+}
 
-const Header = () => {
+const Header: React.FC<HeaderProps> = ({ logo }) => {
   return (
     <header className='fixed top-0 left-0 right-0 bg-white border-b-2 border-[#EEEEEE]'>
       <div className='flex justify-between items-center px-2 py-2'>

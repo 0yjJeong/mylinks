@@ -1,15 +1,20 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GoSmiley } from 'react-icons/go';
 import Header from './components/header';
-import Form from './components/form';
+import useLazyLoad from './hooks/useLazyLoad';
 
+import logo from './assets/logo.png';
 import image from './assets/bg-image-1.jpg';
-import { useState } from 'react';
 
 const Landing = () => {
+  const [loaded, sources] = useLazyLoad([logo, image]);
+
+  if (!loaded) return null;
+
   return (
     <div>
-      <Header />
+      <Header logo={sources[0]} />
       <div className='mt-24 px-3 md:flex'>
         <div className='text-center md:text-left m-auto'>
           <h1 className='mb-4 text-3xl md:text-5xl font-semibold'>
@@ -46,8 +51,8 @@ const Landing = () => {
             </div>
           </div>
         </div>
-        <div className='max-w-3xl mt-10 md:mt-0'>
-          <img src={image} />
+        <div className='max-w-3xl mt-10 md:mt-0 md:min-w-[580px]'>
+          <img src={sources[1] ?? ''} />
         </div>
       </div>
     </div>
