@@ -11,7 +11,7 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
     const { url } = req.body;
     const metadata = new Metadata(url);
     const result = await metadata.getMetadata();
-    res.status(200).send(result);
+    res.status(200).json(result);
   });
 
   // PATH: /table
@@ -19,22 +19,22 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
     .get('/table/:id', async (req, res) => {
       const { id } = req.params;
       const result = await dashboard.table(id);
-      res.status(200).send(result);
+      res.status(200).json(result);
     })
     .get('/table/:id/ref', async (req, res) => {
       const { id } = req.params;
       const result = await dashboard.refTable(id);
-      res.status(200).send(result);
+      res.status(200).json(result);
     })
     .post(['/table', '/table/:id'], async (req, res) => {
       const { id } = req.params;
       const result = await dashboard.addOrUpdateItem('tables', req.body, id);
-      res.status(200).send(result);
+      res.status(200).json(result);
     })
     .delete('/table/:id', async (req, res) => {
       const { id } = req.params;
       await dashboard.deleteItem('tables', id);
-      res.status(200).send();
+      res.status(200).json();
     });
 
   // PATH: /table/:table_id/row
@@ -59,7 +59,7 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
         .status(200)
         .header('x-total-count', dashboard.count.toString())
         .header('Access-Control-Expose-Headers', 'x-total-count')
-        .send(links);
+        .json(links);
     })
     .post('/table/:table_id/row', async (req, res) => {
       const { tableId } = req.body;
@@ -70,26 +70,26 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
             source_id: tableId,
             target_id: getListId(req.body.url),
           });
-          return res.status(200).send(result);
+          return res.status(200).json(result);
         }
       }
       const result = await dashboard.addRow(tableId, req.body);
-      res.status(200).send(result);
+      res.status(200).json(result);
     })
     .put('/table/:table_id/row/:id', async (req, res) => {
       const { id } = req.params;
       const result = await dashboard.addOrUpdateItem('rows', req.body, id);
-      res.status(200).send(result);
+      res.status(200).json(result);
     })
     .delete('/table/:table_id/row/:id', async (req, res) => {
       const { id } = req.params;
       await dashboard.deleteItem('rows', id);
-      res.status(200).send();
+      res.status(200).json();
     })
     .post('/table/:table_id/rows', async (req, res) => {
       const { ids } = req.body;
       await dashboard.deleteRows(ids);
-      res.status(200).send();
+      res.status(200).json();
     });
 
   return router;
