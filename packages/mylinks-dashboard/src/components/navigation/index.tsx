@@ -1,12 +1,12 @@
-import React, { useCallback, useMemo } from 'react';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import React, { useCallback } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import { useParams } from 'react-router-dom';
 // import uniqolor from 'uniqolor';
 // import color from 'color';
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { CgTrash } from 'react-icons/cg';
 import { useData } from '../../api';
 import { useDashboardStore } from '../../store/dashboard';
+import Pagination from './Pagination';
 
 interface NavigationProps {}
 
@@ -89,67 +89,6 @@ const Entries: React.FC<EntriesProps> = ({ tableId }) => {
           onClick={onClick}
         >
           <CgTrash />
-        </button>
-      </div>
-    </div>
-  );
-};
-
-interface PaginationProps {}
-
-export const Pagination: React.FC<PaginationProps> = () => {
-  const { total } = useDashboardStore();
-
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-
-  const offset = useMemo(
-    () => parseInt(searchParams.get('offset') ?? '1', 10),
-    [total, location.search]
-  );
-  const limit = useMemo(() => parseInt(searchParams.get('limit'), 10) || 10, [
-    location.search,
-  ]);
-
-  const prevPage = useMemo(() => (total === 0 ? 0 : offset), [total, offset]);
-  const nextPage = useMemo(
-    () => (offset + limit > total ? total : offset + limit),
-    [total, offset, limit]
-  );
-
-  const canGoToPrevPage = useMemo(() => prevPage - limit > 0, [prevPage]);
-  const canGoToNextPage = useMemo(() => nextPage > total, [nextPage, total]);
-
-  return (
-    <div className='flex whitespace-nowrap pl-2 pr-3 mt-2 mb-2'>
-      <div className='pl-2 flex gap-1'>
-        <button
-          className={`w-6 flex items-center justify-center text-[#999999] hover:text-[#2C2C2C] ${!canGoToPrevPage &&
-            'pointer-events-none hover:text-[#999999]'}`}
-        >
-          <Link
-            to={`${location.pathname}?offset=${offset - limit}&limit=${limit}`}
-          >
-            <MdKeyboardArrowLeft />
-          </Link>
-        </button>
-        <span>
-          <strong className='font-medium'>{total}</strong>개 중
-          <span className='pl-1'>
-            <span className='inline-flex p-1 h-5 items-center justify-center rounded-md'>
-              {prevPage}-{nextPage}
-            </span>
-          </span>
-        </span>
-        <button
-          className={`w-6 flex items-center justify-center text-[#999999] hover:text-[#2C2C2C] ${!canGoToNextPage &&
-            'pointer-events-none hover:text-[#999999]'}`}
-        >
-          <Link
-            to={`${location.pathname}?offset=${offset + limit}&limit=${limit}`}
-          >
-            <MdKeyboardArrowRight />
-          </Link>
         </button>
       </div>
     </div>

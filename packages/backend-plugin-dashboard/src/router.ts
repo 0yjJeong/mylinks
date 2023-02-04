@@ -43,9 +43,9 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
       const { table_id } = req.params;
       const {
         offset = 0,
-        limit = 15,
+        limit = 10,
         field = 'created_at',
-        order = 'desc',
+        order = 'asc',
         filter,
         pagination = { offset, limit },
         sort = { field, order },

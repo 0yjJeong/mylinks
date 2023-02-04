@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { MdAddCircle } from 'react-icons/md';
 import { useMutation, useQuery } from 'react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useData } from '../../api';
 import { useDashboardStore } from '../../store/dashboard';
 import { useEventStore } from '../../store/event';
@@ -30,6 +30,7 @@ const Table: React.FC<TableProps> = ({
   const dashboard = useData();
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [activeIndex, setActiveIndex] = useState<number>(null);
   const ref = useRef<HTMLTableElement>(null);
@@ -55,6 +56,11 @@ const Table: React.FC<TableProps> = ({
       refetch();
     },
   });
+
+  useEffect(() => {
+    refetch();
+    console.log('location.search ', location.search);
+  }, [location.search]);
 
   useEffect(() => {
     initTotal(data.count);
