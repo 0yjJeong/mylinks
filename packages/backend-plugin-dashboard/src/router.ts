@@ -17,29 +17,48 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
   // PATH: /table
   router
     .get('/table/:id', async (req, res) => {
-      const { id } = req.params;
-      const result = await dashboard.table(id);
-      res.status(200).json(result);
+      try {
+        const { id } = req.params;
+        const result = await dashboard.table(id);
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json(error);
+      }
     })
     .get('/table/:id/ref', async (req, res) => {
-      const { id } = req.params;
-      const result = await dashboard.refTable(id);
-      res.status(200).json(result);
+      try {
+        const { id } = req.params;
+        const result = await dashboard.refTable(id);
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json(error);
+      }
     })
     .post(['/table', '/table/:id'], async (req, res) => {
-      const { id } = req.params;
-      const result = await dashboard.addOrUpdateItem('tables', req.body, id);
-      res.status(200).json(result);
+      try {
+        const { id } = req.params;
+        const result = await dashboard.addOrUpdateItem('tables', req.body, id);
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json(error);
+      }
     })
     .delete('/table/:id', async (req, res) => {
-      const { id } = req.params;
-      await dashboard.deleteItem('tables', id);
-      res.status(200).json();
+      try {
+        const { id } = req.params;
+        await dashboard.deleteItem('tables', id);
+        res.status(200).json();
+      } catch (error) {
+        const { id } = req.params;
+        await dashboard.deleteItem('tables', id);
+        res.status(200).json();
+      }
     });
 
   // PATH: /table/:table_id/row
   router
     .get('/table/:table_id/rows', async (req, res) => {
+      console.log();
       const { table_id } = req.params;
       const {
         offset = 0,
@@ -50,16 +69,22 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
         pagination = { offset, limit },
         sort = { field, order },
       } = req.query;
+
       const links = await dashboard.rows(table_id, {
         pagination,
         sort,
         filter,
       });
-      res
-        .status(200)
-        .header('x-total-count', dashboard.count.toString())
-        .header('Access-Control-Expose-Headers', 'x-total-count')
-        .json(links);
+
+      try {
+        res
+          .status(200)
+          .header('x-total-count', dashboard.count.toString())
+          .header('Access-Control-Expose-Headers', 'x-total-count')
+          .json(links);
+      } catch (error) {
+        res.status(400).json(error);
+      }
     })
     .post('/table/:table_id/row', async (req, res) => {
       const { tableId } = req.body;
@@ -74,22 +99,38 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
         }
       }
       const result = await dashboard.addRow(tableId, req.body);
-      res.status(200).json(result);
+      try {
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json(error);
+      }
     })
     .put('/table/:table_id/row/:id', async (req, res) => {
-      const { id } = req.params;
-      const result = await dashboard.addOrUpdateItem('rows', req.body, id);
-      res.status(200).json(result);
+      try {
+        const { id } = req.params;
+        const result = await dashboard.addOrUpdateItem('rows', req.body, id);
+        res.status(200).json(result);
+      } catch (error) {
+        res.status(400).json(error);
+      }
     })
     .delete('/table/:table_id/row/:id', async (req, res) => {
-      const { id } = req.params;
-      await dashboard.deleteItem('rows', id);
-      res.status(200).json();
+      try {
+        const { id } = req.params;
+        await dashboard.deleteItem('rows', id);
+        res.status(200).json();
+      } catch (error) {
+        res.status(400).json(error);
+      }
     })
     .post('/table/:table_id/rows', async (req, res) => {
-      const { ids } = req.body;
-      await dashboard.deleteRows(ids);
-      res.status(200).json();
+      try {
+        const { ids } = req.body;
+        await dashboard.deleteRows(ids);
+        res.status(200).json();
+      } catch (error) {
+        res.status(400).json(error);
+      }
     });
 
   return router;
