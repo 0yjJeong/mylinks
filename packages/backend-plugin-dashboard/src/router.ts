@@ -58,7 +58,6 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
   // PATH: /table/:table_id/row
   router
     .get('/table/:table_id/rows', async (req, res) => {
-      console.log();
       const { table_id } = req.params;
       const {
         offset = 0,

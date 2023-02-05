@@ -85,7 +85,6 @@ export default class Database implements Resource {
 
   async addRow(tableId: ID, item: Result): Promise<Result> {
     const id = uuidv4();
-    console.log(id, tableId);
     await this.database<Result>('rows').insert({
       id,
       url: item.url || null,
