@@ -6,7 +6,8 @@ export type MetadataResponse = {
 };
 
 export type TableResponse = {
-  data: TableRaw;
+  data?: TableRaw;
+  error?: any;
 };
 
 export type RefTableResponse = {
@@ -41,29 +42,35 @@ export type DeleteRowResponse = {};
 export type DeleteRowsResponse = void;
 
 interface TDataManager {
+  /**
+   * Metadata
+   */
   matadata(url: string): Promise<MetadataResponse>;
-  table(): Promise<TableResponse>;
-  refTable(): Promise<RefTableResponse>;
+
+  /**
+   * Table
+   */
+  table(id: string): Promise<TableResponse>;
+  refTable(id: string): Promise<RefTableResponse>;
   addTable(list: Partial<TableRaw>): Promise<AddTableResponse>;
   editTable(
+    id: string,
     list: Omit<TableRaw, 'id' | 'created_at'>
   ): Promise<EditTableResponse>;
-  deleteTable(): Promise<DeleteTableResponse>;
-  rows(): Promise<RowsResponse>;
+  deleteTable(id: string): Promise<DeleteTableResponse>;
+
+  /**
+   * Row
+   */
+  rows(id: string): Promise<RowsResponse>;
   addRow(tableId: string): Promise<AddRowResponse>;
   editRow(id: string, row: Partial<RowRaw>): Promise<EditRowResponse>;
   deleteRow(id: string): Promise<DeleteRowResponse>;
-  deleteRows(ids: string[]): Promise<DeleteRowsResponse>;
+  deleteRows(id: string, ids: string[]): Promise<DeleteRowsResponse>;
 }
 
 export default class DataManager implements TDataManager {
   constructor(private readonly apiUrl: string) {}
-
-  get id() {
-    return window.location.href
-      .match(/\/table\/([a-zA-Z0-9-])+/g)[0]
-      .split('/')[2];
-  }
 
   get baseUrl() {
     return `${this.apiUrl}/dashboard/table`;
@@ -77,15 +84,13 @@ export default class DataManager implements TDataManager {
     return { data };
   }
 
-  async table(): Promise<TableResponse> {
-    const { data } = await axios.get<TableRaw>(`${this.baseUrl}/${this.id}`);
+  async table(id: string): Promise<TableResponse> {
+    const { data } = await axios.get<TableRaw>(`${this.baseUrl}/${id}`);
     return { data };
   }
 
-  async refTable(): Promise<RefTableResponse> {
-    const { data } = await axios.get<TableRaw[]>(
-      `${this.baseUrl}/${this.id}/ref`
-    );
+  async refTable(id: string): Promise<RefTableResponse> {
+    const { data } = await axios.get<TableRaw[]>(`${this.baseUrl}/${id}/ref`);
     return { data };
   }
 
@@ -94,22 +99,22 @@ export default class DataManager implements TDataManager {
     return { data };
   }
 
-  async editTable(table: Partial<TableRaw>): Promise<EditTableResponse> {
-    const { data } = await axios.post<TableRaw>(
-      `${this.baseUrl}/${this.id}`,
-      table
-    );
+  async editTable(
+    id: string,
+    table: Partial<TableRaw>
+  ): Promise<EditTableResponse> {
+    const { data } = await axios.post<TableRaw>(`${this.baseUrl}/${id}`, table);
     return { data };
   }
 
-  async deleteTable(): Promise<DeleteTableResponse> {
-    const { data } = await axios.delete<TableRaw>(`${this.baseUrl}/${this.id}`);
+  async deleteTable(id: string): Promise<DeleteTableResponse> {
+    const { data } = await axios.delete<TableRaw>(`${this.baseUrl}/${id}`);
     return { data };
   }
 
-  async rows(): Promise<RowsResponse> {
+  async rows(id: string): Promise<RowsResponse> {
     const { headers, data } = await axios.get<RowRaw[]>(
-      `${this.baseUrl}/${this.id}/rows${location.search}`
+      `${this.baseUrl}/${id}/rows${location.search}`
     );
     const count = parseInt(headers['x-total-count'], 10);
     return { data, count };
@@ -125,7 +130,7 @@ export default class DataManager implements TDataManager {
 
   async editRow(id: string, row: Partial<RowRaw>): Promise<EditRowResponse> {
     const { data } = await axios.put<RowRaw>(
-      `${this.baseUrl}/${this.id}/row/${id}`,
+      `${this.baseUrl}/${id}/row/${id}`,
       row
     );
     return { data };
@@ -133,12 +138,12 @@ export default class DataManager implements TDataManager {
 
   async deleteRow(id: string): Promise<DeleteRowResponse> {
     const { data } = await axios.delete<RowRaw>(
-      `${this.baseUrl}/${this.id}/row/${id}`
+      `${this.baseUrl}/${id}/row/${id}`
     );
     return { data };
   }
 
-  async deleteRows(ids: string[]): Promise<void> {
-    await axios.post<void>(`${this.baseUrl}/${this.id}/rows`, { ids });
+  async deleteRows(id: string, ids: string[]): Promise<void> {
+    await axios.post<void>(`${this.baseUrl}/${id}/rows`, { ids });
   }
 }
