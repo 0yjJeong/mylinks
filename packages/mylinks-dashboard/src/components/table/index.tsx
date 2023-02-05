@@ -12,7 +12,6 @@ import { useData } from '../../api';
 import { useDashboardStore } from '../../store/dashboard';
 import { useEventStore } from '../../store/event';
 import Column from './Column';
-
 import Head from './Head';
 
 interface TableProps {
@@ -42,10 +41,11 @@ const Table: React.FC<TableProps> = ({
   const { data, refetch } = useQuery(
     `dashboard/table/${id}/rows`,
     () => {
-      return dashboard.rows();
+      return dashboard.rows(id);
     },
     {
       enabled: !!id,
+      retry: false,
       initialData: { data: [], count: 0 },
       refetchOnWindowFocus: false,
     }
@@ -58,9 +58,10 @@ const Table: React.FC<TableProps> = ({
   });
 
   useEffect(() => {
-    refetch();
-    console.log('location.search ', location.search);
-  }, [location.search]);
+    if (id) {
+      refetch();
+    }
+  }, [id, location.search]);
 
   useEffect(() => {
     initTotal(data.count);
@@ -140,8 +141,8 @@ const Table: React.FC<TableProps> = ({
 
   return (
     <div
-      style={{ height: 'calc(100% - 92px)' }}
-      className='w-full relative overflow-auto bg-[#F6F6F6]'
+      style={{ height: 'calc(100% - 100px)' }}
+      className='w-full h-[calc(100%_-_91px)] md:h-[calc(100%_-_99px)] relative overflow-auto bg-[#F6F6F6]'
     >
       <table
         ref={ref}
@@ -199,6 +200,7 @@ const Table: React.FC<TableProps> = ({
                       'sticky left-0 z-20 cursor-pointer hover:bg-[#E8E8E8]'}`}
                     onClick={async (e) => {
                       e.preventDefault();
+
                       // If this table is not created, we should create table at first
                       if (!id) {
                         const table = await dashboard.addTable({ title: '' });
