@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Landing from './landing';
 import List from './list';
 
 function App() {
@@ -7,7 +8,7 @@ function App() {
       <Routes>
         <Route path='/table' element={<List />} />
         <Route path='/table/:id' element={<List />} />
-        <Route index element={<>Home</>} />
+        <Route index element={<Landing />} />
       </Routes>
     </BrowserRouter>
   );
