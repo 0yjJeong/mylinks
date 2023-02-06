@@ -15,7 +15,7 @@ const Landing = () => {
   return (
     <div>
       <Header logo={sources[0]} />
-      <div className='mt-24 px-3 md:flex'>
+      <div className='mt-36 px-3 md:flex'>
         <div className='text-center md:text-left m-auto'>
           <h1 className='mb-4 text-3xl md:text-5xl font-semibold'>
             수많은
@@ -51,7 +51,7 @@ const Landing = () => {
             </div>
           </div>
         </div>
-        <div className='max-w-3xl mt-10 md:mt-0 md:min-w-[580px]'>
+        <div className='max-w-3xl m-auto md:flex-[50%]'>
           <img src={sources[1] ?? ''} />
         </div>
       </div>
@@ -62,21 +62,19 @@ const Landing = () => {
 const TableForm = () => {
   const [id, setId] = useState('');
   return (
-    <form className='border-b-2 border-[#616161] relative'>
+    <form className='border-b-2 border-[#616161] flex'>
       <input
-        className='px-4 py-2 w-full outline-none '
+        className='px-4 pr-2 outline-none flex-1'
         placeholder='테이블 아이디를 입력하세요'
         onChange={(e) => {
           setId(e.target.value);
         }}
       />
-      {id && (
-        <Link to={`/table/${id}`}>
-          <button className='absolute top-0 right-0 bottom-0 text-white bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500'>
-            이동하기
-          </button>
-        </Link>
-      )}
+      {
+        <button className='text-white bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 px-1 py-2'>
+          <Link to={`/table/${id}`}>이동하기</Link>
+        </button>
+      }
     </form>
   );
 };
