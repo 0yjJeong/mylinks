@@ -14,13 +14,31 @@ services:
       - POSTGRES_USER=mylinks
       - POSTGRES_PASSWORD=mylinks
       - POSTGRES_DB=mylinks
+  nginx:
+    restart: always
+    build: 
+      dockerfile: Dockerfile
+      context: ./lib/nginx
+    ports:
+      - 80:80
+  example:
+    container_name: example
+    build:
+      context: .
+      dockerfile: ./example/Dockerfile
+    # ports:
+    #   - 3000:3000
+    depends_on:
+      - backend-example
+    links:
+      - backend-example
   backend-example:
     container_name: backend-example
     build:
       context: .
       dockerfile: ./packages/backend/Dockerfile
-    ports:
-      - 5000:5000
+    # ports:
+    #   - 5000:5000
     depends_on:
       - pg
     links:
