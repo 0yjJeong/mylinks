@@ -1,0 +1,10 @@
+.git
+node_modules
+
+packages/*/node_modules
+packages/*/dist
+packages/*/postgresql/data
+
+example/node_modules
+example/dist
+
