@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  pg:
+    image: postgres:13
+    container_name: pg
+    restart: always
+    volumes:
+      - ./packages/backend/postgresql/data:/var/lib/postgresql/data
+      - ./packages/backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=mylinks
+      - POSTGRES_PASSWORD=mylinks
+      - POSTGRES_DB=mylinks
+  nginx:
+    restart: always
+    build: 
+      dockerfile: Dockerfile
+      context: ./lib/nginx
+    ports:
+      - 80:80
+  example:
+    container_name: example
+    build:
+      context: .
+      dockerfile: ./example/Dockerfile
+    # ports:
+    #   - 3000:3000
+    depends_on:
+      - backend-example
+    links:
+      - backend-example
+  backend-example:
+    container_name: backend-example
+    build:
+      context: .
+      dockerfile: ./packages/backend/Dockerfile
+    # ports:
+    #   - 5000:5000
+    depends_on:
+      - pg
+    links:
+      - pg 
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=localhost://mylinks:mylinks@pg:5432/mylinks
+    restart: always

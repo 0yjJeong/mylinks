@@ -12,7 +12,7 @@ import { BiTable } from 'react-icons/bi';
 
 import logo from './assets/logo.png';
 
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const apiUrl = import.meta.env.VITE_API_URL ?? '';
 
 const List = () => {
   const dataManager = new DataManager(apiUrl);
