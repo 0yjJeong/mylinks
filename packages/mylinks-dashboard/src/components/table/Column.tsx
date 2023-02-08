@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import replace from 'lodash.replace';
 import { BsCheck } from 'react-icons/bs';
 import { useData } from '../../api';
 import { useEventStore } from '../../store/event';
@@ -85,8 +86,12 @@ const Column: React.FC<ColumnProps> = ({
       if (name === 'url' && !value) {
         const { data } = await dashboard.matadata(innerText);
         row = {
-          title: data.title.slice(0, 45),
-          description: data.description.slice(0, 100),
+          title: replace(data.title, '\n', ' ')
+            .slice(0, 45)
+            .trim(),
+          description: replace(data.description, '\n', ' ')
+            .slice(0, 100)
+            .trim(),
           url: data.url,
         };
       } else {
@@ -140,7 +145,7 @@ const Column: React.FC<ColumnProps> = ({
           'rounded-sm border-[1px] border-[#2057e3] text-clip pr-2'} ${index ===
           0 && 'w-[calc(100%_-_24px)]'}`}
       >
-        {(value ?? '').trim()}
+        {value ?? ''}
       </span>
     </td>
   );
