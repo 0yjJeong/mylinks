@@ -12,12 +12,9 @@ import { BiTable } from 'react-icons/bi';
 
 import logo from './assets/logo.png';
 
-const apiUrl = import.meta.env.VITE_API_URL ?? '';
-
 const List = () => {
-  const dataManager = new DataManager(apiUrl);
   return (
-    <Wrapper dataManager={dataManager}>
+    <>
       <Header logo={logo} />
       <Navigation />
       <Table>
@@ -43,7 +40,7 @@ const List = () => {
           설명
         </Head>
       </Table>
-    </Wrapper>
+    </>
   );
 };
 

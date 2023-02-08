@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { QueryClient, useMutation, useQueryClient } from 'react-query';
 import replace from 'lodash.replace';
 import { BsCheck } from 'react-icons/bs';
 import { useData } from '../../api';

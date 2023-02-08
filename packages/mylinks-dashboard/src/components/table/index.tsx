@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { MdAddCircle } from 'react-icons/md';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useData } from '../../api';
 import { useDashboardStore } from '../../store/dashboard';
@@ -206,9 +206,7 @@ const Table: React.FC<TableProps> = ({
                         const table = await dashboard.addTable({ title: '' });
                         await dashboard.addRow(table.data.id);
                         navigate(`/table/${table.data.id}`);
-                      }
-
-                      if (isFirstCell) {
+                      } else if (isFirstCell) {
                         mutation.mutate();
                       }
                     }}
