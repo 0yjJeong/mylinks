@@ -63,7 +63,7 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
         offset = 0,
         limit = 10,
         field = 'created_at',
-        order = 'asc',
+        order = 'desc',
         filter,
         pagination = { offset, limit },
         sort = { field, order },

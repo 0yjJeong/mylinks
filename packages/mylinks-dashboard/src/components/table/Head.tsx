@@ -47,7 +47,7 @@ const Head = React.forwardRef<HTMLTableCellElement, HeadProps>((props, ref) => {
       </span>
       <div
         style={{ height: `${(rowLength + 2) * 40}px` }}
-        className={`bg-[#D5D5D5] w-[1px] cursor-col-resize absolute top-0 bottom-0 right-0`}
+        className={`bg-[#D5D5D5] w-[1px] cursor-col-resize absolute top-0 bottom-0 right-0 z-10`}
         onMouseDown={onMouseDown}
       />
     </th>

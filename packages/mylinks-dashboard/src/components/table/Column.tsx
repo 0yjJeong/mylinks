@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { QueryClient, useMutation, useQueryClient } from 'react-query';
-import replace from 'lodash.replace';
+import { useMutation, useQueryClient } from 'react-query';
 import { BsCheck } from 'react-icons/bs';
 import { useData } from '../../api';
 import { useEventStore } from '../../store/event';
 import { RowRaw } from '../../types';
 import { useDashboardStore } from '../../store/dashboard';
+import { useCell } from '../../context/cell/CellContext';
+import AnimatedColumn from './AnimatedColumn';
 
 interface ColumnProps {
   rowId: string;
@@ -36,8 +37,8 @@ const Column: React.FC<ColumnProps> = ({
   const queryClient = useQueryClient();
   const dashboard = useData();
   const { select, unselect } = useEventStore();
-
   const { selectedRows, toggleRow } = useDashboardStore();
+  const { isFetching, fetch } = useCell();
 
   const mutation = useMutation(
     (row: Partial<RowRaw>) => dashboard.editRow(rowId, row),
@@ -81,27 +82,13 @@ const Column: React.FC<ColumnProps> = ({
     async (name: string) => {
       unselect();
 
-      let row = null;
-      const innerText = ref.current.innerText;
-      if (name === 'url' && !value) {
-        const { data } = await dashboard.matadata(innerText);
-        row = {
-          title: replace(data.title, '\n', ' ')
-            .slice(0, 45)
-            .trim(),
-          description: replace(data.description, '\n', ' ')
-            .slice(0, 100)
-            .trim(),
-          url: data.url,
-        };
-      } else {
-        if (innerText !== value) {
-          row = { [name]: innerText };
+      const { innerText } = ref.current;
+      if (innerText !== value) {
+        if (name === 'url') {
+          await fetch(innerText);
+        } else {
+          mutation.mutate({ [name]: innerText });
         }
-      }
-
-      if (row) {
-        mutation.mutate(row);
       }
     },
     [unselect]
@@ -117,6 +104,8 @@ const Column: React.FC<ColumnProps> = ({
     rowId,
     selectedRows,
   ]);
+
+  if (isFetching) return <AnimatedColumn />;
 
   return (
     <td

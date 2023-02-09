@@ -6,9 +6,10 @@ import React, {
   useState,
 } from 'react';
 import { MdAddCircle } from 'react-icons/md';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useData } from '../../api';
+import { CellContextPropvider } from '../../context/cell/CellContext';
 import { useDashboardStore } from '../../store/dashboard';
 import { useEventStore } from '../../store/event';
 import Column from './Column';
@@ -159,35 +160,41 @@ const Table: React.FC<TableProps> = ({
         </thead>
         <tbody className='contents'>
           {data?.data.map((...row) => (
-            <tr key={row[0].id} className='contents'>
-              {(childrenWithProps as React.ReactElement[]).map(
-                (child, index) => {
-                  const name = child.props.name;
-                  const editable = !!child.props.editable;
-                  const nameInRow = name in row[0];
-                  const rowSelected = !!selected && selected.id === row[0].id;
-                  const isSelected = rowSelected && selected.name === name;
-                  const classes = index === 0 && 'sticky left-0 z-40';
+            <CellContextPropvider
+              key={row[0].id}
+              tableId={id}
+              rowId={row[0].id}
+            >
+              <tr className='contents'>
+                {(childrenWithProps as React.ReactElement[]).map(
+                  (child, index) => {
+                    const name = child.props.name;
+                    const editable = !!child.props.editable;
+                    const nameInRow = name in row[0];
+                    const rowSelected = !!selected && selected.id === row[0].id;
+                    const isSelected = rowSelected && selected.name === name;
+                    const classes = index === 0 && 'sticky left-0 z-40';
 
-                  if (!nameInRow) return null;
-                  return (
-                    <Column
-                      key={name}
-                      index={index}
-                      isSelected={isSelected}
-                      focused={focused}
-                      rowId={row[0].id}
-                      name={name}
-                      tableId={id}
-                      value={row[0][name]}
-                      editable={editable}
-                      nextRowId={data?.data[row[1] + 1]?.id}
-                      classes={classes}
-                    />
-                  );
-                }
-              )}
-            </tr>
+                    if (!nameInRow) return null;
+                    return (
+                      <Column
+                        key={name}
+                        index={index}
+                        isSelected={isSelected}
+                        focused={focused}
+                        rowId={row[0].id}
+                        name={name}
+                        tableId={id}
+                        value={row[0][name]}
+                        editable={editable}
+                        nextRowId={data?.data[row[1] + 1]?.id}
+                        classes={classes}
+                      />
+                    );
+                  }
+                )}
+              </tr>
+            </CellContextPropvider>
           ))}
           <tr className='contents'>
             {Array.from({ length: childrenWithProps.length }).map(
