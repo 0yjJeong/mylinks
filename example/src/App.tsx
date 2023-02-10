@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Wrapper, { DataManager } from '@mylinks/dashboard';
-import Landing from './landing';
+import Landing from './components/landing';
 import List from './list';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? '';
