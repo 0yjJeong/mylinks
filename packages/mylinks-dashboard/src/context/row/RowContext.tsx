@@ -9,23 +9,23 @@ interface Context {
   fetch: (url: string) => Promise<void>;
 }
 
-const CellContext = React.createContext<Context>(null);
+const RowContext = React.createContext<Context>(null);
 
-export const useCell = () => {
-  const row = useContext(CellContext);
+export const useRow = () => {
+  const row = useContext(RowContext);
   if (!row) {
     throw new Error('No row context available');
   }
   return row;
 };
 
-type CellContextPropviderProps = {
+type RowContextPropviderProps = {
   tableId: string;
   rowId: string;
   children?: React.ReactNode;
 };
 
-export const CellContextPropvider: React.FC<CellContextPropviderProps> = ({
+export const RowContextProvider: React.FC<RowContextPropviderProps> = ({
   tableId,
   rowId,
   children,
@@ -45,8 +45,8 @@ export const CellContextPropvider: React.FC<CellContextPropviderProps> = ({
   );
 
   const fetch = async (url: string) => {
+    setIsFetching(true);
     try {
-      setIsFetching(true);
       const { data } = await dashboard.matadata(url);
       await mutation.mutate({
         title: replace(data.title, /[\\n]+/, ' ')
@@ -57,17 +57,17 @@ export const CellContextPropvider: React.FC<CellContextPropviderProps> = ({
           .trim(),
         url: data.url,
       });
-      setIsFetching(false);
     } catch (err) {
-      mutation.mutate({
+      await mutation.mutate({
         url,
       });
     }
+    setIsFetching(false);
   };
 
   return (
-    <CellContext.Provider value={{ isFetching, fetch }}>
+    <RowContext.Provider value={{ isFetching, fetch }}>
       {children}
-    </CellContext.Provider>
+    </RowContext.Provider>
   );
 };

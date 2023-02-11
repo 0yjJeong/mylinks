@@ -11,7 +11,7 @@ const PORT = parseInt(process.env.PORT ?? '', 10) || DEFAULT_PORT;
 
 const DEFAULT_DATABASE_URL =
   'postgres://dashboard:dashboard@localhost:5432/dashboard';
-const DATABASE_URL = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
+const DATABASE_URL = process.env.DATABASE_URL ?? DEFAULT_DATABASE_URL;
 
 function dashboardEnv() {
   return {

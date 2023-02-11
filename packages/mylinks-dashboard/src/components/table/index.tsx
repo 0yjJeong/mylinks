@@ -9,7 +9,7 @@ import { MdAddCircle } from 'react-icons/md';
 import { useMutation, useQuery } from 'react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useData } from '../../api';
-import { CellContextPropvider } from '../../context/cell/CellContext';
+import { RowContextProvider } from '../../context/row/RowContext';
 import { useDashboardStore } from '../../store/dashboard';
 import { useEventStore } from '../../store/event';
 import Column from './Column';
@@ -37,7 +37,7 @@ const Table: React.FC<TableProps> = ({
   const refs = useRef<React.MutableRefObject<HTMLElement>[]>([]);
 
   const { selected, focused } = useEventStore();
-  const { initTotal, setSelectedRows } = useDashboardStore();
+  const { initTotal, selectedRows, setSelectedRows } = useDashboardStore();
 
   const { data, refetch } = useQuery(
     `dashboard/table/${id}/rows`,
@@ -132,19 +132,8 @@ const Table: React.FC<TableProps> = ({
     return child;
   });
 
-  const cols = useMemo(
-    () =>
-      `${Array.from({ length: childrenWithProps.length })
-        .map(() => `minmax(${minCellWidth}px,3fr)`)
-        .join('_')}`,
-    [minCellWidth, childrenWithProps.length]
-  );
-
   return (
-    <div
-      style={{ height: 'calc(100% - 100px)' }}
-      className='w-full h-[calc(100%_-_91px)] md:h-[calc(100%_-_99px)] relative overflow-auto bg-[#F6F6F6]'
-    >
+    <div className='w-full h-[calc(100%_-_91px)] md:h-[calc(100%_-_99px)] relative overflow-auto bg-[#F6F6F6]'>
       <table
         ref={ref}
         style={{
@@ -153,26 +142,27 @@ const Table: React.FC<TableProps> = ({
         /**
          * position:sticky always behave on parent's scroll container, so table must have full width size.
          */
-        className={`overflow-auto absolute top-0 bottom-0 w-full content-start grid grid-cols-[${cols}]`}
+        className='overflow-auto absolute top-0 bottom-0 w-full content-start grid'
       >
         <thead className='contents'>
           <tr className='contents'>{childrenWithProps}</tr>
         </thead>
         <tbody className='contents'>
           {data?.data.map((...row) => (
-            <CellContextPropvider
-              key={row[0].id}
-              tableId={id}
-              rowId={row[0].id}
-            >
+            <RowContextProvider key={row[0].id} tableId={id} rowId={row[0].id}>
               <tr className='contents'>
                 {(childrenWithProps as React.ReactElement[]).map(
                   (child, index) => {
                     const name = child.props.name;
                     const editable = !!child.props.editable;
                     const nameInRow = name in row[0];
-                    const rowSelected = !!selected && selected.id === row[0].id;
-                    const isSelected = rowSelected && selected.name === name;
+                    const rowId = row[0].id;
+                    const value = row[0][name];
+                    const rowSelected = selectedRows.includes(rowId);
+                    const isSelected =
+                      !!selected &&
+                      selected.id === row[0].id &&
+                      selected.name === name;
                     const classes = index === 0 && 'sticky left-0 z-40';
 
                     if (!nameInRow) return null;
@@ -182,19 +172,19 @@ const Table: React.FC<TableProps> = ({
                         index={index}
                         isSelected={isSelected}
                         focused={focused}
-                        rowId={row[0].id}
+                        rowId={rowId}
                         name={name}
                         tableId={id}
-                        value={row[0][name]}
+                        value={value}
                         editable={editable}
-                        nextRowId={data?.data[row[1] + 1]?.id}
+                        rowSelected={rowSelected}
                         classes={classes}
                       />
                     );
                   }
                 )}
               </tr>
-            </CellContextPropvider>
+            </RowContextProvider>
           ))}
           <tr className='contents'>
             {Array.from({ length: childrenWithProps.length }).map(
@@ -213,7 +203,10 @@ const Table: React.FC<TableProps> = ({
                         const table = await dashboard.addTable({ title: '' });
                         await dashboard.addRow(table.data.id);
                         navigate(`/table/${table.data.id}`);
-                      } else if (isFirstCell) {
+                      }
+
+                      // If this is the first cell in table footer, we should add a new row
+                      else if (isFirstCell) {
                         mutation.mutate();
                       }
                     }}

@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { BsCheck } from 'react-icons/bs';
 import { useData } from '../../api';
 import { useEventStore } from '../../store/event';
 import { RowRaw } from '../../types';
 import { useDashboardStore } from '../../store/dashboard';
-import { useCell } from '../../context/cell/CellContext';
+import { useRow } from '../../context/row/RowContext';
 import AnimatedColumn from './AnimatedColumn';
 
 interface ColumnProps {
@@ -17,7 +17,7 @@ interface ColumnProps {
   isSelected: boolean;
   focused: boolean;
   editable: boolean;
-  nextRowId?: string;
+  rowSelected: boolean;
   classes?: string;
 }
 
@@ -30,15 +30,15 @@ const Column: React.FC<ColumnProps> = ({
   isSelected,
   focused,
   editable,
-  nextRowId,
+  rowSelected,
   classes = '',
 }) => {
   const ref = useRef<HTMLElement>();
   const queryClient = useQueryClient();
   const dashboard = useData();
   const { select, unselect } = useEventStore();
-  const { selectedRows, toggleRow } = useDashboardStore();
-  const { isFetching, fetch } = useCell();
+  const { toggleRow } = useDashboardStore();
+  const { isFetching, fetch } = useRow();
 
   const mutation = useMutation(
     (row: Partial<RowRaw>) => dashboard.editRow(rowId, row),
@@ -100,19 +100,11 @@ const Column: React.FC<ColumnProps> = ({
     }
   }, [rowId, name, select]);
 
-  const rowSelected = useMemo(() => selectedRows.includes(rowId), [
-    rowId,
-    selectedRows,
-  ]);
-
   if (isFetching) return <AnimatedColumn />;
-
   return (
     <td
       className={`flex items-center bg-white border-b-[1px] border-[#D5D5D5] mr-[1px] ${classes} ${isSelected &&
-        'w-fit z-30'} ${rowSelected &&
-        'border-[#2bba51] bg-[#e8faed]'} ${selectedRows.includes(nextRowId) &&
-        'border-[#2bba51]'}`}
+        'w-fit z-30'} ${rowSelected && 'bg-[#e8faed]'}`}
       onClick={onClick}
     >
       {index === 0 && (

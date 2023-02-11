@@ -1,1 +1,1 @@
-export { CellContextPropvider, useCell } from './cell';
+export { CellContextPropvider, useCell } from './row';
