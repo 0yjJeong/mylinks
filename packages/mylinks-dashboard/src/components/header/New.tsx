@@ -6,12 +6,11 @@ interface NewProps {}
 
 const New: React.FC<NewProps> = () => {
   return (
-    <Link
-      to='/table'
-      className='relative rounded-md bg-[#e8e9ff] flex justify-center items-center w-8 h-8 hover:bg-[#dedffc] after:content-[""] after:block after:pb-[100%]'
-    >
-      <AiOutlinePlus className='text-[#4b52db]' />
-    </Link>
+    <button className='flex justify-center items-center w-[49px] h-[49px] md:w-[57px] md:h-[57px] bg-[#e8e9ff] hover:bg-[#dedffc]'>
+      <Link to='/table' className='text-[#4b52db]'>
+        <AiOutlinePlus />
+      </Link>
+    </button>
   );
 };
 

@@ -33,7 +33,7 @@ const Title: React.FC<TitleProps> = ({ id, ...rest }) => {
 
   return (
     <input
-      className='flex-1 text-[#2C2C2C] text-sm md:text-xl'
+      className='flex-1 text-[#2C2C2C] text-sm outline-none md:text-xl'
       onBlur={onBlur}
       {...rest}
     />
