@@ -1,6 +1,8 @@
 .git
 node_modules
 
+**/*.env
+
 packages/*/node_modules
 packages/*/dist
 packages/*/postgresql/data
