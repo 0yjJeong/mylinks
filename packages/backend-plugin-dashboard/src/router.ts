@@ -49,9 +49,7 @@ export function createRouter(dashboard: Resource, clientUrl: string) {
         await dashboard.deleteItem('tables', id);
         res.status(200).json();
       } catch (error) {
-        const { id } = req.params;
-        await dashboard.deleteItem('tables', id);
-        res.status(200).json();
+        res.status(400).json(error);
       }
     });
 

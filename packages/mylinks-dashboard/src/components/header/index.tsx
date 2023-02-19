@@ -24,6 +24,7 @@ const Header: React.FC<HeaderProps> = ({ logo = '' }) => {
       enabled: !!id,
       retry: false,
       refetchOnWindowFocus: false,
+      cacheTime: 0,
       onError: () => {
         navigate('/table');
       },
